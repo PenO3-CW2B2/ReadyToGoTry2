@@ -60,6 +60,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:background="@color/colorPrimary"
+        android:onClick="switchToLoginActivity"
         android:text="@string/login_button"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"

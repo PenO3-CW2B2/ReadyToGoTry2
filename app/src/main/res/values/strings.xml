@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ReadyToGoTry2</string>
+    <string name="welcome_message">Welcome To ReadyToGo</string>
+    <string name="startscreen_description">Please sign in to your ReadyToGo-account</string>
 </resources>

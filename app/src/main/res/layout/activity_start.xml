@@ -22,11 +22,21 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
-        android:text="TextView"
+        android:layout_marginTop="48dp"
+        android:text="@string/welcome_message"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        tools:layout_editor_absoluteX="16dp" />
+        tools:layout_editor_absoluteX="72dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="259dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/startscreen_description"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:layout_editor_absoluteX="72dp" />
 </android.support.constraint.ConstraintLayout>

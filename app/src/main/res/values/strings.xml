@@ -20,4 +20,5 @@
         completions."
     </string>
     <string name="loginscreen_message">Sign in to your account</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

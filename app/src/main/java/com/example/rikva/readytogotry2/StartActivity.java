@@ -17,5 +17,10 @@ public class StartActivity extends AppCompatActivity {
     public void switchToLoginActivity(View view) {
         startActivity(new Intent(StartActivity.this, LoginActivity.class));
     }
+    public void switchToRegisterActivity(View view) {
+        startActivity(new Intent(StartActivity.this, MapsActivity.class));
 
-}
+    }
+
+
+    }

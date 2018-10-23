@@ -1,12 +1,14 @@
 package com.example.rikva.readytogotry2;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -116,5 +118,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    public void switchToMapsActivity(View view) {
+        startActivity(new Intent(this, UnlockActivity.class));
     }
 }

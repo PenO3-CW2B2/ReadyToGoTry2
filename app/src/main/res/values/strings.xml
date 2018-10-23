@@ -21,4 +21,7 @@
     </string>
     <string name="loginscreen_message">Sign in to your account</string>
     <string name="title_activity_maps">Map</string>
+    <string name="name">Username</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
 </resources>

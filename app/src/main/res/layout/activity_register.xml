@@ -15,7 +15,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/name"
+        android:hint="@string/name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +28,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="@string/prompt_password"
+        android:hint="@string/prompt_password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tb_username" />
 
@@ -41,7 +41,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/first_name"
+        android:hint="@string/first_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tb_password" />
 
@@ -54,7 +54,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/last_name"
+        android:hint="@string/last_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tb_fname" />
 
@@ -67,9 +67,9 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textEmailAddress"
+        android:hint="@string/prompt_email"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_lname"
-        tools:text="@string/prompt_email" />
+        app:layout_constraintTop_toBottomOf="@+id/tb_lname" />
 
     <Button
         android:id="@+id/register_button"
@@ -91,6 +91,6 @@
         android:layout_marginTop="16dp"
         android:onClick="switchToMapsActivity"
         android:text="Maps"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_button" />
+        app:layout_constraintStart_toEndOf="@+id/register_button"
+        app:layout_constraintTop_toBottomOf="@+id/tb_email" />
 </android.support.constraint.ConstraintLayout>

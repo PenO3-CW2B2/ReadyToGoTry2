@@ -18,9 +18,8 @@ public class StartActivity extends AppCompatActivity {
         startActivity(new Intent(StartActivity.this, LoginActivity.class));
     }
     public void switchToRegisterActivity(View view) {
-        startActivity(new Intent(StartActivity.this, MapsActivity.class));
+        startActivity(new Intent(StartActivity.this, RegisterActivity.class));
 
     }
-
 
     }

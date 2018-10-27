@@ -3,6 +3,7 @@ package com.example.rikva.readytogotry2;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         Button submit = (Button)findViewById(R.id.register_button);
 
+
         submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 makeRequest();
@@ -42,6 +44,21 @@ public class RegisterActivity extends AppCompatActivity {
         final EditText fname_field = (EditText)findViewById(R.id.tb_fname);
         final EditText lname_field = (EditText)findViewById(R.id.tb_lname);
         final EditText email_field = (EditText)findViewById(R.id.tb_email);
+
+        if (TextUtils.isEmpty(username_field.getText().toString())) {
+            username_field.setError(getString(R.string.error_field_required));
+            return;
+        }
+        if (TextUtils.isEmpty(email_field.getText().toString())) {
+            email_field.setError(getString(R.string.error_field_required));
+            return;
+        }
+        if (TextUtils.isEmpty(password_field.getText().toString())) {
+            password_field.setError(getString(R.string.error_field_required));
+            return;
+        }
+
+
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url ="http://nomis.ulyssis.be/xbike/auth/users/create/";

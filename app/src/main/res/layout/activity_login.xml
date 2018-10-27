@@ -112,6 +112,7 @@
         android:layout_margin="16dp"
         android:layout_weight="1"
         android:gravity="center|bottom"
-        android:text="@string/startscreen_info" />
+        android:text="@string/startscreen_info"
+        android:textColor="@android:color/darker_gray" />
 
 </LinearLayout>

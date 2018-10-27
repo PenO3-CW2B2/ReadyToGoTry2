@@ -32,12 +32,14 @@ public class RegisterActivity extends AppCompatActivity {
 
         submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                makeRequest();
+                if (makeRequest()) {
+                    finish();
+                }
             }
         });
     }
 
-    private void makeRequest () {
+    private boolean makeRequest () {
 
         final EditText username_field = (EditText)findViewById(R.id.tb_username);
         final EditText password_field = (EditText)findViewById(R.id.tb_password);
@@ -47,15 +49,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(username_field.getText().toString())) {
             username_field.setError(getString(R.string.error_field_required));
-            return;
+            return false;
         }
         if (TextUtils.isEmpty(email_field.getText().toString())) {
             email_field.setError(getString(R.string.error_field_required));
-            return;
+            return false;
         }
         if (TextUtils.isEmpty(password_field.getText().toString())) {
             password_field.setError(getString(R.string.error_field_required));
-            return;
+            return false;
         }
 
 
@@ -97,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
         };
 
         queue.add(stringRequest);
-
+        return true;
     }
 
     public void switchToMapsActivity(View view) {

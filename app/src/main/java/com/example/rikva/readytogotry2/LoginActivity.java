@@ -3,6 +3,7 @@ package com.example.rikva.readytogotry2;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -36,6 +37,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -319,6 +323,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         @Override
                         public void onResponse(String response) {
                             Log.d("DEBUG",response);
+                            try {
+                                JSONObject tokenObject = new JSONObject(response);
+                                String  token = tokenObject.getString("auth_token");
+                                Log.d("DEBUG",token);
+                                SharedPreferences preferences = getSharedPreferences("Prefs", MODE_PRIVATE);
+                                preferences.edit().putString("token", token).apply();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.d("DEBUG", "JSON Parse Error");
+                            }
+
                         }
                     }, new Response.ErrorListener() {
                 @Override

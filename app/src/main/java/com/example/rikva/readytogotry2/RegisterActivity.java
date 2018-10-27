@@ -1,6 +1,7 @@
 package com.example.rikva.readytogotry2;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 
 public class RegisterActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

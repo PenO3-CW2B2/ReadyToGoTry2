@@ -313,8 +313,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: Store received token safely
-
             RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
             String url ="http://nomis.ulyssis.be/xbike/auth/token/login/";
 
@@ -363,6 +361,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                //TODO: Start new activity
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

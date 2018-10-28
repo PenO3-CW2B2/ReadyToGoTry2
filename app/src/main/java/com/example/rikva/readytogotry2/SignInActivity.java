@@ -48,13 +48,11 @@ public class SignInActivity extends AppCompatActivity {
                 signInRequest(new VolleyCallBack() {
                     @Override
                     public void onSuccess() {
-                        Log.d("DEBUG", "SUCCES");
                         toast_success.show();
                     }
 
                     @Override
                     public void onFailure() {
-                        Log.d("DEBUG", "FAIL");
                         toast_fail.show();
                     }
                 });
@@ -68,9 +66,11 @@ public class SignInActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(usernameField.getText().toString())) {
             usernameField.setError(getString(R.string.error_field_required));
+            return;
         }
         if (TextUtils.isEmpty(passwdField.getText().toString())) {
             passwdField.setError(getString(R.string.error_field_required));
+            return;
         }
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -80,11 +80,9 @@ public class SignInActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("DEBUG", response);
                         try {
                             JSONObject tokenObject = new JSONObject(response);
                             String token = tokenObject.getString("auth_token");
-                            Log.d("DEBUG", token);
                             SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
                             prefs.edit().putString("token", token).apply();
                             callBack.onSuccess();
@@ -96,7 +94,6 @@ public class SignInActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("DEBUG", "ERROR");
                 callBack.onFailure();
             }
         }

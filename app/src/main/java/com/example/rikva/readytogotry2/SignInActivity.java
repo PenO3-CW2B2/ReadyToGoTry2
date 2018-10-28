@@ -51,6 +51,12 @@ public class SignInActivity extends AppCompatActivity {
                         Log.d("DEBUG", "SUCCES");
                         toast_success.show();
                     }
+
+                    @Override
+                    public void onFailure() {
+                        Log.d("DEBUG", "FAIL");
+                        toast_fail.show();
+                    }
                 });
             }
         });
@@ -75,9 +81,8 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("DEBUG", response);
-                        JSONObject tokenObject = null;
                         try {
-                            tokenObject = new JSONObject(response);
+                            JSONObject tokenObject = new JSONObject(response);
                             String token = tokenObject.getString("auth_token");
                             Log.d("DEBUG", token);
                             SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
@@ -85,12 +90,14 @@ public class SignInActivity extends AppCompatActivity {
                             callBack.onSuccess();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            callBack.onFailure();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("DEBUG", "ERROR");
+                callBack.onFailure();
             }
         }
     ) {
@@ -111,6 +118,7 @@ public class SignInActivity extends AppCompatActivity {
 
     public interface VolleyCallBack {
         void onSuccess();
+        void onFailure();
     }
 
 }

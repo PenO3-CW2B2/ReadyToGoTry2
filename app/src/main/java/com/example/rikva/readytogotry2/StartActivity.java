@@ -16,7 +16,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void switchToLoginActivity(View view) {
-        startActivity(new Intent(StartActivity.this, LoginActivity.class));
+        startActivity(new Intent(StartActivity.this, SignInActivity.class));
     }
     public void switchToRegisterActivity(View view) {
         startActivity(new Intent(StartActivity.this, RegisterActivity.class));

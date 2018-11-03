@@ -51,7 +51,6 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void tokenCheck(final VolleyCallBack callBack) {
-
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://nomis.ulyssis.be/xbike/auth/users/me/";
 
@@ -92,13 +91,7 @@ public class StartActivity extends AppCompatActivity {
                 }
         };
         queue.add(stringRequest);
-
     }
-
-    /*
-    public void switchToLoginActivity(View view) {
-        startActivity(new Intent(StartActivity.this, SignInActivity.class));
-    }*/
 
     public void switchToRegisterActivity(View view) {
         startActivity(new Intent(StartActivity.this, RegisterActivity.class));
@@ -109,5 +102,4 @@ public class StartActivity extends AppCompatActivity {
         void onSuccess();
         void onFailure();
     }
-
-    }
+}

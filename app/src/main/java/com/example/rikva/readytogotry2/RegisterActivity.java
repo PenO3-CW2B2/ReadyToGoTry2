@@ -35,6 +35,8 @@ public class RegisterActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (makeRequest()) {
+                    SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
+                    prefs.edit().remove("token").commit();
                     finish();
                 }
             }

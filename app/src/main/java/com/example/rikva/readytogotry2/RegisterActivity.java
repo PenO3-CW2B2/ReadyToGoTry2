@@ -61,8 +61,10 @@ public class RegisterActivity extends AppCompatActivity {
             password_field.setError(getString(R.string.error_field_required));
             return false;
         }
-
-
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email_field.getText().toString()).matches()) {
+            email_field.setError(getString(R.string.invalid_email));
+            return false;
+        }
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url ="http://nomis.ulyssis.be/xbike/auth/users/create/";
@@ -99,14 +101,11 @@ public class RegisterActivity extends AppCompatActivity {
                 return params;
             }
         };
-
         queue.add(stringRequest);
         return true;
     }
 
     public void switchToMapsActivity(View view) {
         startActivity(new Intent(RegisterActivity.this, MapsActivity.class));
-
     }
-
 }

@@ -25,4 +25,6 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="register_title">Create Your ReadyToGo Account</string>
+    <string name="invalid_email">Please enter a valid email address</string>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.example.rikva.readytogotry2;
 
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -84,6 +85,12 @@ public class SignInActivity extends AppCompatActivity {
                             String token = tokenObject.getString("auth_token");
                             SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
                             prefs.edit().putString("token", token).apply();
+
+
+
+
+
+
                             callBack.onSuccess();
                         } catch (JSONException e) {
                             e.printStackTrace();

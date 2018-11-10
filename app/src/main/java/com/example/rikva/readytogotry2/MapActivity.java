@@ -21,14 +21,17 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class MapActivity extends AppCompatActivity {
 
     MapView map = null;
-    public LocationRequest mLocationRequest;
-
+    //public LocationRequest mLocationRequest;
+    private MyLocationNewOverlay mLocationOverlay;
 
 
     @Override
@@ -36,7 +39,7 @@ public class MapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        startLocationUpdates();
+        //startLocationUpdates();
 
 
         //handle permissions first, before map is created. not depicted here
@@ -68,7 +71,9 @@ public class MapActivity extends AppCompatActivity {
         map.getOverlays().add(startMarker);
         startMarker.setTitle("Waaiberg");
 
-
+        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
+        this.mLocationOverlay.enableMyLocation();
+        map.getOverlays().add(this.mLocationOverlay);
     }
 
     public void onResume(){
@@ -89,7 +94,7 @@ public class MapActivity extends AppCompatActivity {
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    protected void startLocationUpdates() {
+    /*protected void startLocationUpdates() {
         long FASTEST_INTERVAL = 2000;
         long UPDATE_INTERVAL = 5 * 1000;
 
@@ -143,6 +148,6 @@ public class MapActivity extends AppCompatActivity {
                     }
                 },
                 Looper.myLooper());
-    }
+    }*/
 
 }

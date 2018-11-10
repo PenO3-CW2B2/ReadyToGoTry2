@@ -14,7 +14,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void switchToMapsActivity(View view) {
-        startActivity(new Intent(this, MapsActivity.class));
+        startActivity(new Intent(this, MapActivity.class));
     }
 
 }

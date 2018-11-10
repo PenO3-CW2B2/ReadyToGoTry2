@@ -2,6 +2,7 @@ package com.example.rikva.readytogotry2;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Looper;
 import android.preference.PreferenceManager;
@@ -10,11 +11,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationSettingsRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -24,6 +34,9 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -65,15 +78,20 @@ public class MapActivity extends AppCompatActivity {
         GeoPoint startPoint = new GeoPoint(50.869901, 4.695439);
         mapController.setCenter(startPoint);
 
-        Marker startMarker = new Marker(map);
-        startMarker.setPosition(startPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        map.getOverlays().add(startMarker);
-        startMarker.setTitle("Waaiberg");
-
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
         this.mLocationOverlay.enableMyLocation();
         map.getOverlays().add(this.mLocationOverlay);
+        getBikes(new VolleyCallBack() {
+            @Override
+            public void onSuccess() {
+                Log.d("CW2B2", "SUCCESS");
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("CW2B2", "FAILURE");
+            }
+        });
     }
 
     public void onResume(){
@@ -92,6 +110,67 @@ public class MapActivity extends AppCompatActivity {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    private void getBikes(final VolleyCallBack callBack) {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://nomis.ulyssis.be/xbike/auth/freebikes";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray data = new JSONArray(response);
+
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject obj = data.getJSONObject(i);
+                                Double longitude = obj.getDouble("last_longitude");
+                                Double latitude = obj.getDouble("last_laltitude");
+                                String id = obj.getString("id");
+                                Log.d("CW2B2", longitude.toString() + " " + latitude.toString());
+
+                                GeoPoint bikeLocation = new GeoPoint(latitude, longitude);
+                                Marker bike = new Marker(map);
+                                bike.setPosition(bikeLocation);
+                                bike.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                                map.getOverlays().add(bike);
+                                bike.setTitle(id);
+                            }
+                            callBack.onSuccess();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d("CW2B2", e.toString());
+                            callBack.onFailure();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callBack.onFailure();
+                Log.d("CW2B2", "BLAH3");
+
+            }
+        }) {
+
+            @Override
+            public Map getHeaders() {
+                HashMap headers = new HashMap();
+                SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
+                String token = prefs.getString("token","");
+                String headerString = "Token " + token;
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", headerString);
+                return headers;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
+    public interface VolleyCallBack {
+        void onSuccess();
+        void onFailure();
     }
 
     /*protected void startLocationUpdates() {

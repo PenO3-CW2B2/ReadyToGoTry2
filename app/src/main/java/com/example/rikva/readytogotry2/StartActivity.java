@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -81,7 +80,7 @@ public class StartActivity extends AppCompatActivity {
 
                 @Override
                 public Map getHeaders() {
-                    HashMap headers = new HashMap();
+                    HashMap<String, String> headers = new HashMap<>();
                     SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
                     String token = prefs.getString("token","");
                     String headerString = "Token " + token;

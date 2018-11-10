@@ -2,6 +2,7 @@ package com.example.rikva.readytogotry2;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -71,7 +72,6 @@ public class MapActivity extends AppCompatActivity {
         this.mLocationOverlay.enableMyLocation();
         this.mLocationOverlay.enableFollowLocation();
         map.getOverlays().add(this.mLocationOverlay);
-
 
         getBikes(new VolleyCallBack() {
             @Override

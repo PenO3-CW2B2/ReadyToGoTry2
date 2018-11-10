@@ -48,7 +48,6 @@ public class MapActivity extends AppCompatActivity {
     MapView map = null;
     //public LocationRequest mLocationRequest;
     private MyLocationNewOverlay mLocationOverlay;
-    private CompassOverlay mCompassOverlay;
 
 
     @Override
@@ -78,7 +77,7 @@ public class MapActivity extends AppCompatActivity {
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
         IMapController mapController = map.getController();
-        mapController.setZoom(15);
+        mapController.setZoom(15.0);
 
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
         this.mLocationOverlay.enableMyLocation();

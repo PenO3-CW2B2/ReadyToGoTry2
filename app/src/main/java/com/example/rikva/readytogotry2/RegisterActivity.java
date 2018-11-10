@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (makeRequest()) {
                     SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
-                    prefs.edit().remove("token").commit();
+                    prefs.edit().remove("token").apply();
                     finish();
                 }
             }
@@ -108,6 +108,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void switchToMapsActivity(View view) {
-        startActivity(new Intent(RegisterActivity.this, MapsActivity.class));
+        startActivity(new Intent(RegisterActivity.this, MapActivity.class));
     }
 }

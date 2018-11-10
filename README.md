@@ -10,7 +10,8 @@ Link: https://www.shareicon.net/bicycle-585149
 
 The "Bicycle icon" has been used in the logo with a different color.
 
-### Text font
+
+### Text font:
 
 "DISCO" by typografski is licensed under a freeware license
 

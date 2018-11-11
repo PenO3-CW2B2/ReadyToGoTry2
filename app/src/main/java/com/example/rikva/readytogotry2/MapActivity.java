@@ -5,15 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.inputmethodservice.Keyboard;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -35,7 +43,9 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -112,6 +122,43 @@ public class MapActivity extends AppCompatActivity {
                 Log.d("CW2B2", "FAILURE");
             }
         });
+
+
+        final EditText searchStringET = (EditText)findViewById(R.id.searchbar);
+        final ImageButton searchButton = (ImageButton)findViewById(R.id.searchButton);
+        final Marker searchResult = new Marker(map);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchString = searchStringET.getText().toString();
+                if (searchString.isEmpty()) {
+                    return;
+                }
+
+                ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.mapMainLayout);
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(layout.getWindowToken(), 0);
+
+                Geocoder geocoder = new Geocoder(MapActivity.this);
+                List<Address> addresses = null;
+                try {
+                    addresses = geocoder.getFromLocationName(searchString, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(addresses.size() > 0) {
+                    double latitude = addresses.get(0).getLatitude();
+                    double longitude = addresses.get(0).getLongitude();
+                    mLocationOverlay.disableFollowLocation();
+                    mapController.setCenter(new GeoPoint(latitude, longitude));
+                    searchResult.setPosition(new GeoPoint(latitude, longitude));
+                    searchResult.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                    map.getOverlays().add(searchResult);
+                }
+            }
+        });
+
     }
 
     public void onResume(){
@@ -130,6 +177,10 @@ public class MapActivity extends AppCompatActivity {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    private void search() {
+
     }
 
     private void getBikes(final VolleyCallBack callBack) {

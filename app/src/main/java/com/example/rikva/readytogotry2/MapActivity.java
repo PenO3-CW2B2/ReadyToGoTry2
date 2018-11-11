@@ -1,12 +1,16 @@
 package com.example.rikva.readytogotry2;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -68,6 +72,13 @@ public class MapActivity extends AppCompatActivity {
         IMapController mapController = map.getController();
         mapController.setZoom(15.0);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    10);
+            return;
+        }
+
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
         this.mLocationOverlay.enableMyLocation();
         this.mLocationOverlay.enableFollowLocation();
@@ -120,15 +131,28 @@ public class MapActivity extends AppCompatActivity {
                                 JSONObject obj = data.getJSONObject(i);
                                 Double longitude = obj.getDouble("last_longitude");
                                 Double latitude = obj.getDouble("last_laltitude");
-                                String id = obj.getString("id");
+                                //String id = obj.getString("id");
                                 Log.d("CW2B2", longitude.toString() + " " + latitude.toString());
 
                                 GeoPoint bikeLocation = new GeoPoint(latitude, longitude);
                                 Marker bike = new Marker(map);
+                                bike.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                                    @Override
+                                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                                        Context context = getApplicationContext();
+                                        CharSequence text_success = "Yeeeey Markers!! :D";
+                                        int duration = Toast.LENGTH_SHORT;
+
+                                        final Toast toast = Toast.makeText(context, text_success, duration);
+                                        toast.show();
+                                        return false;
+                                    }
+                                });
+                                bike.setIcon(getResources().getDrawable(R.mipmap.bicycle));
                                 bike.setPosition(bikeLocation);
                                 bike.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                                 map.getOverlays().add(bike);
-                                bike.setTitle(id);
+                                //bike.setTitle(id);
                             }
                             callBack.onSuccess();
                         } catch (JSONException e) {

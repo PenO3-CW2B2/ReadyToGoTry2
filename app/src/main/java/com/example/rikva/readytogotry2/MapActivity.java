@@ -51,7 +51,6 @@ import java.util.Map;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class MapActivity extends AppCompatActivity {
-
     MapView map = null;
     //public LocationRequest mLocationRequest;
     private MyLocationNewOverlay mLocationOverlay;
@@ -81,6 +80,7 @@ public class MapActivity extends AppCompatActivity {
         //see also StorageUtils
         //note, the load method also sets the HTTP User Agent to your application's package name, abusing osm's tile servers will get you banned based on this string
 
+        Configuration.getInstance().setUserAgentValue(getPackageName());
         //inflate and create the map
         setContentView(R.layout.activity_map);
 

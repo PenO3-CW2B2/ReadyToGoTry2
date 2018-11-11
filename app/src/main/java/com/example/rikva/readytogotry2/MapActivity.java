@@ -97,8 +97,14 @@ public class MapActivity extends AppCompatActivity {
         this.mLocationOverlay.enableMyLocation();
         map.getOverlays().add(this.mLocationOverlay);
 
-        mapController.setCenter(mLocationOverlay.getMyLocation());
-        this.mLocationOverlay.enableFollowLocation();
+        if (mLocationOverlay.getMyLocation() != null) {
+            mapController.setCenter(mLocationOverlay.getMyLocation());
+            this.mLocationOverlay.enableFollowLocation();
+        } else {
+            mapController.setCenter(new GeoPoint(50.883333, 4.7));
+            //TODO: SnackBar
+
+        }
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

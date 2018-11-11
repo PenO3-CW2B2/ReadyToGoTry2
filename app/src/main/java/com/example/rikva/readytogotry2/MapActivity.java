@@ -8,10 +8,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -56,6 +58,7 @@ public class MapActivity extends AppCompatActivity {
                     10);
         }
 
+
         //startLocationUpdates();
 
 
@@ -75,18 +78,27 @@ public class MapActivity extends AppCompatActivity {
 
         map = (MapView) findViewById(R.id.map2);
         map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setBuiltInZoomControls(true);
+        map.setBuiltInZoomControls(false);
         map.setMultiTouchControls(true);
-        IMapController mapController = map.getController();
+        final IMapController mapController = map.getController();
         mapController.setZoom(15.0);
 
 
 
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
         this.mLocationOverlay.enableMyLocation();
-        this.mLocationOverlay.enableFollowLocation();
         map.getOverlays().add(this.mLocationOverlay);
 
+        mapController.setCenter(mLocationOverlay.getMyLocation());
+        this.mLocationOverlay.enableFollowLocation();
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLocationOverlay.enableFollowLocation();
+            }
+        });
 
 
         getBikes(new VolleyCallBack() {

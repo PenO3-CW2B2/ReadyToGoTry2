@@ -26,5 +26,9 @@
     <string name="last_name">Last Name</string>
     <string name="register_title">Create Your ReadyToGo Account</string>
     <string name="invalid_email">Please enter a valid email address</string>
+    <string name="bike_id">Bike ID:</string>
+    <string name="current_distance_from_location">Distance to bike:</string>
+    <string name="meters">m</string>
+    <string name="address">Address:</string>
 
 </resources>

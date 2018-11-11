@@ -2,9 +2,11 @@ package com.example.rikva.readytogotry2;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -84,6 +86,8 @@ public class MapActivity extends AppCompatActivity {
         this.mLocationOverlay.enableFollowLocation();
         map.getOverlays().add(this.mLocationOverlay);
 
+
+
         getBikes(new VolleyCallBack() {
             @Override
             public void onSuccess() {
@@ -128,10 +132,9 @@ public class MapActivity extends AppCompatActivity {
                             JSONArray data = new JSONArray(response);
 
                             for (int i = 0; i < data.length(); i++) {
-                                JSONObject obj = data.getJSONObject(i);
+                                 final JSONObject obj = data.getJSONObject(i);
                                 Double longitude = obj.getDouble("last_longitude");
-                                Double latitude = obj.getDouble("last_laltitude");
-                                //String id = obj.getString("id");
+                                final Double latitude = obj.getDouble("last_laltitude");
                                 Log.d("CW2B2", longitude.toString() + " " + latitude.toString());
 
                                 GeoPoint bikeLocation = new GeoPoint(latitude, longitude);
@@ -139,12 +142,11 @@ public class MapActivity extends AppCompatActivity {
                                 bike.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
                                     @Override
                                     public boolean onMarkerClick(Marker marker, MapView mapView) {
-                                        Context context = getApplicationContext();
-                                        CharSequence text_success = "Yeeeey Markers!! :D";
-                                        int duration = Toast.LENGTH_SHORT;
-
-                                        final Toast toast = Toast.makeText(context, text_success, duration);
-                                        toast.show();
+                                        Intent intent = new Intent(MapActivity.this, BikeInfo.class);
+                                        intent.putExtra("bikeObject", obj.toString());
+                                        GeoPoint currentLocation = mLocationOverlay.getMyLocation();
+                                        intent.putExtra("currentLocation", String.valueOf(currentLocation));
+                                        startActivity(intent);
                                         return false;
                                     }
                                 });

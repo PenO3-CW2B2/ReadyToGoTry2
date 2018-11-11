@@ -68,9 +68,7 @@ public class MapActivity extends AppCompatActivity {
                     10);
         }
 
-
         //startLocationUpdates();
-
 
         //handle permissions first, before map is created. not depicted here
 
@@ -87,7 +85,7 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map);
 
         map = (MapView) findViewById(R.id.map2);
-        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setTileSource(TileSourceFactory.HIKEBIKEMAP);
         map.setBuiltInZoomControls(false);
         map.setMultiTouchControls(true);
         final IMapController mapController = map.getController();

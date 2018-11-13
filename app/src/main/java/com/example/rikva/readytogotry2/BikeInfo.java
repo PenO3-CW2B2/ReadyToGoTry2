@@ -1,6 +1,7 @@
 package com.example.rikva.readytogotry2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -100,7 +101,10 @@ public class BikeInfo extends AppCompatActivity {
 
                 final Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
-            }
+
+                    startActivity(new Intent(BikeInfo.this, UnlockActivity.class));
+
+                }
         });
     }
 }

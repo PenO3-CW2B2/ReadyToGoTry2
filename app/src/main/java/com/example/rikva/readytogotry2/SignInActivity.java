@@ -85,13 +85,9 @@ public class SignInActivity extends AppCompatActivity {
                             String token = tokenObject.getString("auth_token");
                             SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
                             prefs.edit().putString("token", token).apply();
-
-
-
-
-
-
+                            prefs.edit().putString("username", usernameField.getText().toString());
                             callBack.onSuccess();
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                             callBack.onFailure();

@@ -1,12 +1,16 @@
 package com.example.rikva.readytogotry2;
 
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +27,8 @@ public class BikeInfo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bike_info);
+
+        Button rentButton = (Button)findViewById(R.id.rentButton);
 
         TextView bikeIDTextView = (TextView) findViewById(R.id.bikeID);
         TextView distTextView = (TextView) findViewById(R.id.dist);
@@ -70,9 +76,6 @@ public class BikeInfo extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-
-
         Location currentLocation = null;
         if (getIntent().hasExtra("currentLocation")) {
             String[] location = getIntent().getStringExtra("currentLocation").split(",");
@@ -88,6 +91,16 @@ public class BikeInfo extends AppCompatActivity {
 
         distTextView.setText(String.valueOf(dist));
 
+        rentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getApplicationContext();
+                CharSequence text = "You rented a bike! :D";
+                int duration = Toast.LENGTH_SHORT;
 
+                final Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        });
     }
 }

@@ -214,7 +214,10 @@ public class MapActivity extends AppCompatActivity {
                                         Intent intent = new Intent(MapActivity.this, BikeInfo.class);
                                         intent.putExtra("bikeObject", obj.toString());
                                         GeoPoint currentLocation = mLocationOverlay.getMyLocation();
-                                        intent.putExtra("currentLocation", String.valueOf(currentLocation));
+                                        if (currentLocation!= null){
+                                            intent.putExtra("currentLocation", String.valueOf(currentLocation));
+                                        }
+
                                         startActivity(intent);
                                         return false;
                                     }

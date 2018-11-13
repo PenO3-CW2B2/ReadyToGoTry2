@@ -30,5 +30,6 @@
     <string name="current_distance_from_location">Distance to bike:</string>
     <string name="meters">m</string>
     <string name="address">Address:</string>
+    <string name="rent">Click here to rent this bike</string>
 
 </resources>

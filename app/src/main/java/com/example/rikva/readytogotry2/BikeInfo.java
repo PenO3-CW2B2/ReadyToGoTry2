@@ -2,23 +2,35 @@ package com.example.rikva.readytogotry2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class BikeInfo extends AppCompatActivity {
 
@@ -102,9 +114,53 @@ public class BikeInfo extends AppCompatActivity {
                 final Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
-                    startActivity(new Intent(BikeInfo.this, UnlockActivity.class));
+                startActivity(new Intent(BikeInfo.this, UnlockActivity.class));
 
                 }
         });
     }
+
+
+    private void signInRequest(final SignInActivity.VolleyCallBack callBack, final String bike_id) {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://nomis.ulyssis.be/xbike/auth/contracts/create/";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                            callBack.onSuccess();
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callBack.onFailure();
+            }
+        }
+        ) {
+            @Override
+            protected Map<String, String > getParams() {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("bike_id", bike_id);
+
+                return params;
+            }
+
+
+        };
+        queue.add(stringRequest);
+    }
+
+    public interface VolleyCallBack {
+        void onSuccess();
+        void onFailure();
+    }
+
+
+
 }

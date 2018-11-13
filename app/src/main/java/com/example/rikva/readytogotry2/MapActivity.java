@@ -9,6 +9,7 @@ import android.inputmethodservice.Keyboard;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
@@ -92,8 +93,12 @@ public class MapActivity extends AppCompatActivity {
         map.setMultiTouchControls(true);
         final IMapController mapController = map.getController();
         mapController.setZoom(15.0);
+        GpsMyLocationProvider provider = new GpsMyLocationProvider(ctx);
+        provider.addLocationSource(LocationManager.NETWORK_PROVIDER);
 
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
+
+        this.mLocationOverlay = new MyLocationNewOverlay(provider,map);
+
         this.mLocationOverlay.enableMyLocation();
         map.getOverlays().add(this.mLocationOverlay);
 

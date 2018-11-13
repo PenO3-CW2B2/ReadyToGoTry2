@@ -13,6 +13,7 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -91,8 +92,6 @@ public class MapActivity extends AppCompatActivity {
         final IMapController mapController = map.getController();
         mapController.setZoom(15.0);
 
-
-
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
         this.mLocationOverlay.enableMyLocation();
         map.getOverlays().add(this.mLocationOverlay);
@@ -102,8 +101,9 @@ public class MapActivity extends AppCompatActivity {
             this.mLocationOverlay.enableFollowLocation();
         } else {
             mapController.setCenter(new GeoPoint(50.883333, 4.7));
-            //TODO: SnackBar
-
+            ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.mapMainLayout);
+            Snackbar snackbar = Snackbar.make(layout, "No Location Services Available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);

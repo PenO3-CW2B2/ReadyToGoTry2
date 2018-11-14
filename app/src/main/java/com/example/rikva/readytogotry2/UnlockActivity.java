@@ -24,7 +24,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
     public byte[] Hash1;
     public byte[] DateByte;
     public String Test = "test";
-    public String Startdate = "test";
+    public String Startdate;
     public String CurrentDateMillis;
     public NdefMessage Ndef;
 
@@ -60,10 +60,8 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
 
         // Getting all the data that needs to be hashed
-        Hash1 = Test.getBytes();
-
-
-        // TODO start date (boeit nie in welk format) en hash (in byte array format) ophalen van de server
+        Hash1 = prefs.getString("hash", "").getBytes();
+        Startdate = prefs.getString("startTime", "");
 
         CurrentDateMillis = Long.toString(System.currentTimeMillis());
         DateByte = CurrentDateMillis.getBytes();

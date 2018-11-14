@@ -8,11 +8,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -41,7 +40,7 @@ public class BikeInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bike_info);
 
-        Button rentButton = (Button)findViewById(R.id.rentButton);
+        final Button rentButton = (Button) findViewById(R.id.rentButton);
 
         TextView bikeIDTextView = (TextView) findViewById(R.id.bikeID);
         TextView distTextView = (TextView) findViewById(R.id.dist);
@@ -53,14 +52,16 @@ public class BikeInfo extends AppCompatActivity {
         Location bikeLocation = null;
         Double latitude = null;
         Double longitude = null;
+
+        String bikeId = null;
         if (getIntent().hasExtra("bikeObject")) {
             try {
                 JSONObject obj = new JSONObject(getIntent().getStringExtra("bikeObject"));
                 longitude = obj.getDouble("last_longitude");
                 latitude = obj.getDouble("last_laltitude");
-                String id = obj.getString("id");
+                bikeId = obj.getString("id");
 
-                bikeIDTextView.setText(id);
+                bikeIDTextView.setText(bikeId);
 
                 bikeLocation = new Location("");
                 bikeLocation.setLatitude(latitude);
@@ -72,6 +73,8 @@ public class BikeInfo extends AppCompatActivity {
                 Log.d("CW2B2", e.toString());
             }
         }
+
+        final String id = bikeId;
 
         Geocoder geocoder;
         List<Address> addresses;
@@ -114,53 +117,58 @@ public class BikeInfo extends AppCompatActivity {
                 final Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
+                requestContract(id);
                 startActivity(new Intent(BikeInfo.this, UnlockActivity.class));
 
-                }
+            }
         });
     }
 
+    private void requestContract(final String bikeId) {
 
-    private void signInRequest(final SignInActivity.VolleyCallBack callBack, final String bike_id) {
-
-        RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://nomis.ulyssis.be/xbike/auth/contracts/create/";
+        RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
-                            callBack.onSuccess();
-
-
+                        try {
+                            JSONObject dataObject = new JSONObject(response);
+                            String hash = dataObject.getString("hash");
+                            String startTime = dataObject.getString("time_start");
+                            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+                            prefs.edit().putString("hash", hash);
+                            prefs.edit().putString("startTime", startTime);
+                        } catch (JSONException e) {
+                            Log.d("CW2B2", e.toString());
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                callBack.onFailure();
+                Log.d("CW2B2", error.toString());
             }
-        }
-        ) {
+        })
+        {
             @Override
             protected Map<String, String > getParams() {
                 Map<String, String> params = new HashMap<>();
-
-                params.put("bike_id", bike_id);
-
+                params.put("bike_id", bikeId);
                 return params;
             }
-
-
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+                String token = prefs.getString("token", "");
+                String headerString = "Token " + token;
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", headerString);
+                return headers;
+            }
         };
         queue.add(stringRequest);
     }
-
-    public interface VolleyCallBack {
-        void onSuccess();
-        void onFailure();
-    }
-
-
 
 }

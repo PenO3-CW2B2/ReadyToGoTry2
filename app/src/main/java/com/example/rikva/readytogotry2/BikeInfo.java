@@ -129,19 +129,20 @@ public class BikeInfo extends AppCompatActivity {
         });
     }
 
-//    public StringRequest stringRequest;
+
+    public StringRequest stringRequest;
     public JsonObjectRequest objectRequest;
     public JSONObject Params;
 
+//            private JSONObject createparams() throws JSONException {
+//        Params = new JSONObject();
+//
+//        Params.put("bike_id", bikeId);
+//        return Params;
+//
+//
+//    }
 
-    private JSONObject createparams() throws JSONException {
-        Params = new JSONObject();
-
-        Params.put("bike_id", bikeId);
-        return Params;
-
-
-    }
 
     private void requestContract() throws JSONException {
 
@@ -149,56 +150,58 @@ public class BikeInfo extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
 
 
-        objectRequest = new JsonObjectRequest(Request.Method.POST,url,createparams(), new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject dataObject = response;
-                    String hash = dataObject.getString("hash");
-                    Log.d("cw2b2",hash);
-                    String startTime = dataObject.getString("time_start");
-                    Log.d("cw2b2",startTime);
-                    SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-                    prefs.edit().putString("hash", hash);
-                    prefs.edit().putString("startTime", startTime);
-                } catch (JSONException e) {
-                    Log.d("CW2B2", e.toString());
-                }
-
-            }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("CW2B2", objectRequest.toString());
-                        Log.d("CW2B2", error.toString()+"123582");
-                    }
-                })
-
-//        stringRequest = new StringRequest(Request.Method.POST, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        try {
-//                            JSONObject dataObject = new JSONObject(response);
-//                            String hash = dataObject.getString("hash");
-//                            Log.d("cw2b2",hash);
-//                            String startTime = dataObject.getString("time_start");
-//                            Log.d("cw2b2",startTime);
-//                            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-//                            prefs.edit().putString("hash", hash);
-//                            prefs.edit().putString("startTime", startTime);
-//                        } catch (JSONException e) {
-//                            Log.d("CW2B2", e.toString());
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
+//        objectRequest = new JsonObjectRequest(Request.Method.POST,url,createparams(), new Response.Listener<JSONObject>() {
 //            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.d("CW2B2", stringRequest.toString());
-//                Log.d("CW2B2", error.toString()+"123582");
+//            public void onResponse(JSONObject response) {
+//                try {
+//                    JSONObject dataObject = response;
+//                    String hash = dataObject.getString("hash");
+//                    Log.d("cw2b2",hash);
+//                    String startTime = dataObject.getString("time_start");
+//                    Log.d("cw2b2",startTime);
+//                    SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+//                    prefs.edit().putString("hash", hash);
+//                    prefs.edit().putString("startTime", startTime);
+//                } catch (JSONException e) {
+//                    Log.d("CW2B2", e.toString());
+//                }
+//
 //            }
-//        })
+//        },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.d("CW2B2", objectRequest.toString());
+//                        Log.d("CW2B2", error.toString()+"123582");
+//                    }
+//                })
+
+
+
+        stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject dataObject = new JSONObject(response);
+                            String hash = dataObject.getString("hash");
+                            Log.d("cw2b2",hash);
+                            String startTime = dataObject.getString("time_start");
+                            Log.d("cw2b2",startTime);
+                            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+                            prefs.edit().putString("hash", hash);
+                            prefs.edit().putString("startTime", startTime);
+                        } catch (JSONException e) {
+                            Log.d("CW2B2", e.toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+//                Log.d("CW2B2", stringRequest.toString());
+                Log.d("CW2B2", error.toString()+"123582");
+            }
+        })
         {
             @Override
             public Map<String, String> getHeaders() {
@@ -207,7 +210,7 @@ public class BikeInfo extends AppCompatActivity {
                 String token = prefs.getString("token", "");
                 String headerString = "Token " + token;
                 Log.d("CW2B2",headerString);
-//                headers.put("Content-Type", "application/json");
+                headers.put("Content-Type", "application/x-www-form-urlencoded");
                 headers.put("Authorization", headerString);
                 return headers;
             }
@@ -220,12 +223,7 @@ public class BikeInfo extends AppCompatActivity {
             }
 
         };
-
-        Log.d("CW2B2",objectRequest.toString());
-
-
-
-        queue.add(objectRequest);
+        queue.add(stringRequest);
     }
 
 }

@@ -24,7 +24,6 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
     public byte[] ToBeHashed;
     public byte[] Hash1;
     public byte[] DateByte;
-    public String Test = "test";
     public String Startdate;
     public String CurrentDateMillis;
     public NdefMessage Ndef;
@@ -84,7 +83,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        NdefRecord Hash2Record = NdefRecord.createMime("Hash2",  digest.digest(ToBeHashed));
+        NdefRecord Hash2Record = NdefRecord.createMime("Hash2",  Hash2);
         NdefRecord DateInMillisRecord = NdefRecord.createMime("DateInMillis",  DateByte);
         NdefRecord StartdateRecord = NdefRecord.createMime("startdate",  Startdate.getBytes());
         Log.d("cw2", "TEST 1");

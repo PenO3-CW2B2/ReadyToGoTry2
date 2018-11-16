@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class BikeInfo extends AppCompatActivity {
+    public String bikeId = null;
 
 
 
@@ -53,7 +54,7 @@ public class BikeInfo extends AppCompatActivity {
         Double latitude = null;
         Double longitude = null;
 
-        String bikeId = null;
+
         if (getIntent().hasExtra("bikeObject")) {
             try {
                 JSONObject obj = new JSONObject(getIntent().getStringExtra("bikeObject"));
@@ -117,14 +118,14 @@ public class BikeInfo extends AppCompatActivity {
                 final Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
-                requestContract(id);
+                requestContract();
                 startActivity(new Intent(BikeInfo.this, UnlockActivity.class));
 
             }
         });
     }
 
-    private void requestContract(final String bikeId) {
+    private void requestContract() {
 
         String url = "http://nomis.ulyssis.be/xbike/auth/contracts/create/";
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -136,7 +137,9 @@ public class BikeInfo extends AppCompatActivity {
                         try {
                             JSONObject dataObject = new JSONObject(response);
                             String hash = dataObject.getString("hash");
+                            Log.d("cw2b2",hash);
                             String startTime = dataObject.getString("time_start");
+                            Log.d("cw2b2",startTime);
                             SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
                             prefs.edit().putString("hash", hash);
                             prefs.edit().putString("startTime", startTime);
@@ -154,15 +157,17 @@ public class BikeInfo extends AppCompatActivity {
             @Override
             protected Map<String, String > getParams() {
                 Map<String, String> params = new HashMap<>();
+                Log.d("cw2b2", bikeId);
                 params.put("bike_id", bikeId);
                 return params;
             }
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<>();
-                SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+                SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
                 String token = prefs.getString("token", "");
                 String headerString = "Token " + token;
+                Log.d("CW2B2",headerString);
                 headers.put("Content-Type", "application/json");
                 headers.put("Authorization", headerString);
                 return headers;

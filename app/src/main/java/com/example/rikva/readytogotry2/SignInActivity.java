@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -85,7 +86,7 @@ public class SignInActivity extends AppCompatActivity {
                             String token = tokenObject.getString("auth_token");
                             SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
                             prefs.edit().putString("token", token).apply();
-                            prefs.edit().putString("username", usernameField.getText().toString());
+                            prefs.edit().putString("username", usernameField.getText().toString()).apply();
                             callBack.onSuccess();
 
                         } catch (JSONException e) {

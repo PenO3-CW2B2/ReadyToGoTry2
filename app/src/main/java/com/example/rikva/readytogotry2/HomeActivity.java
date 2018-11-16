@@ -19,5 +19,8 @@ public class HomeActivity extends AppCompatActivity {
     public void switchToMapsActivity(View view) {
         startActivity(new Intent(this, MapActivity.class));
     }
+    public void switchToUnlockActivity(View view) {
+        startActivity(new Intent(this, UnlockActivity.class));
+    }
 
 }

@@ -35,7 +35,6 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_unlock);
-        Log.d("cw2b2", "HALLO");
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
@@ -48,7 +47,8 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
             mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
         }
         SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
-        String username = prefs.getString("username","");
+        username = prefs.getString("username","");
+        Log.d("cw2", username + "HALLO1");
 
 
         // HASHING
@@ -72,7 +72,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         System.arraycopy(DateByte, 0, ToBeHashed, 0, DateByte.length);
         System.arraycopy(Hash1, 0, ToBeHashed, DateByte.length, Hash1.length);
         Hash2 = digest.digest(ToBeHashed);
-        Log.d("cw2", bin2hex(Hash2));
+
 
 
 
@@ -87,7 +87,12 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         NdefRecord Hash2Record = NdefRecord.createMime("Hash2",  digest.digest(ToBeHashed));
         NdefRecord DateInMillisRecord = NdefRecord.createMime("DateInMillis",  DateByte);
         NdefRecord StartdateRecord = NdefRecord.createMime("startdate",  Startdate.getBytes());
+        Log.d("cw2", "TEST 1");
+
         NdefRecord UsernameRecord = NdefRecord.createMime("username",  username.getBytes());
+        Log.d("cw2", "TEST 2");
+
+        Log.d("cw2",UsernameRecord.toString()+" "+ StartdateRecord.toString()+ " "+DateInMillisRecord);
         NdefMessage msg = new NdefMessage(new NdefRecord[]{Hash2Record,DateInMillisRecord,StartdateRecord,UsernameRecord});
         Ndef = msg;
         Log.d("cw2b2ndef", Ndef.toString());

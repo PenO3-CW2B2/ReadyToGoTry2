@@ -189,9 +189,6 @@ public class MapActivity extends AppCompatActivity {
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
-    private void search() {
-
-    }
 
     private void getBikes(final VolleyCallBack callBack) {
 
@@ -315,7 +312,6 @@ public class MapActivity extends AppCompatActivity {
                         } else {
                             Log.d("", "NIET OKE");
                         }
-                        //TODO Push location data to server
 
                         // do work (push data to server)
 

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -105,10 +106,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
     }
     static String bin2hex(byte[] data) {
-        StringBuilder hex = new StringBuilder(data.length * 2);
-        for (byte b : data)
-            hex.append(String.format("%02x", b & 0xFF));
-        return hex.toString();
+        return String.format("%0" + (data.length*2) + "X", new BigInteger(1, data));
     }
 
 }

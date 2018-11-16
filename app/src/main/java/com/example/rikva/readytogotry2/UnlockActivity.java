@@ -61,8 +61,14 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
 
         // Getting all the data that needs to be hashed
+        Log.d("cw2b2ndef", "HALLO2c");
+
         Hash1 = prefs.getString("hash", "").getBytes();
+        Log.d("cw2b2ndef", "HALLO3");
+
         Startdate = prefs.getString("startTime", "");
+        Log.d("cw2b2ndef", "HALLO4");
+
 
         CurrentDateMillis = Long.toString(System.currentTimeMillis());
         DateByte = CurrentDateMillis.getBytes();

@@ -147,7 +147,7 @@ public class BikeInfo extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("CW2B2", error.toString());
+                Log.d("CW2B2", error.toString()+"123582");
             }
         })
         {

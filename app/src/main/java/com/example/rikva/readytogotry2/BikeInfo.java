@@ -186,7 +186,7 @@ public class BikeInfo extends AppCompatActivity {
                             JSONObject dataObject = new JSONObject(response);
                             String hash = dataObject.getString("hash");
                             Log.d("cw2b2",hash);
-                            String startTime = dataObject.getString("time_start");
+                            String startTime = dataObject.getString("timestamp");
                             Log.d("cw2b2",startTime);
                             SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
                             prefs.edit().putString("hash", hash);

@@ -118,49 +118,88 @@ public class BikeInfo extends AppCompatActivity {
                 final Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
-                requestContract();
+                try {
+                    requestContract();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 startActivity(new Intent(BikeInfo.this, UnlockActivity.class));
 
             }
         });
     }
 
-    private void requestContract() {
+//    public StringRequest stringRequest;
+    public JsonObjectRequest objectRequest;
+    public JSONObject Params;
+
+
+    private JSONObject createparams() throws JSONException {
+        Params = new JSONObject();
+
+        Params.put("bike_id", bikeId);
+        return Params;
+
+
+    }
+
+    private void requestContract() throws JSONException {
 
         String url = "http://nomis.ulyssis.be/xbike/auth/contracts/create/";
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
+
+        objectRequest = new JsonObjectRequest(Request.Method.POST,url,createparams(), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject dataObject = response;
+                    String hash = dataObject.getString("hash");
+                    Log.d("cw2b2",hash);
+                    String startTime = dataObject.getString("time_start");
+                    Log.d("cw2b2",startTime);
+                    SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+                    prefs.edit().putString("hash", hash);
+                    prefs.edit().putString("startTime", startTime);
+                } catch (JSONException e) {
+                    Log.d("CW2B2", e.toString());
+                }
+
+            }
+        },
+                new Response.ErrorListener() {
                     @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject dataObject = new JSONObject(response);
-                            String hash = dataObject.getString("hash");
-                            Log.d("cw2b2",hash);
-                            String startTime = dataObject.getString("time_start");
-                            Log.d("cw2b2",startTime);
-                            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-                            prefs.edit().putString("hash", hash);
-                            prefs.edit().putString("startTime", startTime);
-                        } catch (JSONException e) {
-                            Log.d("CW2B2", e.toString());
-                        }
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("CW2B2", objectRequest.toString());
+                        Log.d("CW2B2", error.toString()+"123582");
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("CW2B2", error.toString()+"123582");
-            }
-        })
+                })
+
+//        stringRequest = new StringRequest(Request.Method.POST, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        try {
+//                            JSONObject dataObject = new JSONObject(response);
+//                            String hash = dataObject.getString("hash");
+//                            Log.d("cw2b2",hash);
+//                            String startTime = dataObject.getString("time_start");
+//                            Log.d("cw2b2",startTime);
+//                            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+//                            prefs.edit().putString("hash", hash);
+//                            prefs.edit().putString("startTime", startTime);
+//                        } catch (JSONException e) {
+//                            Log.d("CW2B2", e.toString());
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d("CW2B2", stringRequest.toString());
+//                Log.d("CW2B2", error.toString()+"123582");
+//            }
+//        })
         {
-            @Override
-            protected Map<String, String > getParams() {
-                Map<String, String> params = new HashMap<>();
-                Log.d("cw2b2", bikeId);
-                params.put("bike_id", bikeId);
-                return params;
-            }
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<>();
@@ -168,12 +207,25 @@ public class BikeInfo extends AppCompatActivity {
                 String token = prefs.getString("token", "");
                 String headerString = "Token " + token;
                 Log.d("CW2B2",headerString);
-                headers.put("Content-Type", "application/json");
+//                headers.put("Content-Type", "application/json");
                 headers.put("Authorization", headerString);
                 return headers;
             }
+            @Override
+            protected Map<String, String > getParams() {
+                Log.d("cw2b2", "called");
+                Map<String, String> params = new HashMap<>();
+                params.put("bike_id", bikeId);
+                return params;
+            }
+
         };
-        queue.add(stringRequest);
+
+        Log.d("CW2B2",objectRequest.toString());
+
+
+
+        queue.add(objectRequest);
     }
 
 }

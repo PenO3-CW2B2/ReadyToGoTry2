@@ -51,7 +51,7 @@ public class StartActivity extends AppCompatActivity {
 
     private void tokenCheck(final VolleyCallBack callBack) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://nomis.ulyssis.be/xbike/auth/users/me/";
+        String url = "https://andreasp.ulyssis.be/auth/users/me/";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

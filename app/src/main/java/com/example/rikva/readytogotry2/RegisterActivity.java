@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://nomis.ulyssis.be/xbike/auth/users/create/";
+        String url ="https://andreasp.ulyssis.be/auth/users/create/";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

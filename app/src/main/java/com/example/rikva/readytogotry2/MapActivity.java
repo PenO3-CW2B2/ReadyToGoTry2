@@ -193,7 +193,7 @@ public class MapActivity extends AppCompatActivity {
     private void getBikes(final VolleyCallBack callBack) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://nomis.ulyssis.be/xbike/auth/freebikes";
+        String url = "https://andreasp.ulyssis.be/auth/freebikes";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

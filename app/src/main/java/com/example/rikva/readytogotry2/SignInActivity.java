@@ -75,7 +75,7 @@ public class SignInActivity extends AppCompatActivity {
         }
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://nomis.ulyssis.be/xbike/auth/token/login/";
+        String url = "https://andreasp.ulyssis.be/auth/token/login/";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

@@ -146,7 +146,7 @@ public class BikeInfo extends AppCompatActivity {
 
     private void requestContract() throws JSONException {
 
-        String url = "http://nomis.ulyssis.be/xbike/auth/contracts/create/";
+        String url = "https://andreasp.ulyssis.be/auth/contracts/create/";
         RequestQueue queue = Volley.newRequestQueue(this);
 
 

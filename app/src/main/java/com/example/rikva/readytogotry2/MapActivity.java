@@ -10,6 +10,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
@@ -32,6 +33,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationSettingsRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,24 +63,39 @@ public class MapActivity extends AppCompatActivity {
     MapView map = null;
     //public LocationRequest mLocationRequest;
     private MyLocationNewOverlay mLocationOverlay;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationCallback mLocationCallback;
+    private LocationRequest mLocationRequest;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);        Log.d("", "PROBLEEM");
+
+
         setContentView(R.layout.activity_map);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     10);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    10);
+
         }
+
+
+
+
 
         //startLocationUpdates();
 
         //handle permissions first, before map is created. not depicted here
 
         //load/initialize the osmdroid configuration, this can be done
+        mFusedLocationClient= getFusedLocationProviderClient(this);
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         //setting this before the layout is inflated is a good idea
@@ -93,22 +114,30 @@ public class MapActivity extends AppCompatActivity {
         map.setMultiTouchControls(true);
         final IMapController mapController = map.getController();
         mapController.setZoom(15.0);
-        GpsMyLocationProvider provider = new GpsMyLocationProvider(ctx);
-        provider.addLocationSource(LocationManager.NETWORK_PROVIDER);
+//        GpsMyLocationProvider provider = new GpsMyLocationProvider(ctx);
+//        provider.addLocationSource(LocationManager.PASSIVE_PROVIDER);
+//        provider.addLocationSource(LocationManager.KEY_LOCATION_CHANGED);
 
 
-        this.mLocationOverlay = new MyLocationNewOverlay(provider,map);
 
-        this.mLocationOverlay.enableMyLocation();
+
+        this.mLocationOverlay = new MyLocationNewOverlay(map);
+
+//        this.mLocationOverlay.enableMyLocation();
+        this.mLocationOverlay.disableMyLocation();
+
         map.getOverlays().add(this.mLocationOverlay);
 
         if (mLocationOverlay.getMyLocation() != null) {
             mapController.setCenter(mLocationOverlay.getMyLocation());
             this.mLocationOverlay.enableFollowLocation();
+            Log.d("CW2B2", mLocationOverlay.getMyLocation().toString() );
         } else {
             mapController.setCenter(new GeoPoint(50.883333, 4.7));
             ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.mapMainLayout);
             Snackbar snackbar = Snackbar.make(layout, "No Location Services Available", Snackbar.LENGTH_LONG);
+            Log.d("CW2B2", "No Location Services Available" );
+
             snackbar.show();
         }
 
@@ -119,6 +148,8 @@ public class MapActivity extends AppCompatActivity {
                 mLocationOverlay.enableFollowLocation();
             }
         });
+
+
 
 
         getBikes(new VolleyCallBack() {
@@ -168,16 +199,47 @@ public class MapActivity extends AppCompatActivity {
                 }
             }
         });
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+
+
+                if (locationResult != null) {
+                    Log.d("cw2b2", "OKE" + " LATITUDE= " + locationResult.getLastLocation().getLatitude() + " LONGITTUDE" + locationResult.getLastLocation().getLongitude());
+//                    mLocationOverlay.setLoccationHack(locationResult.getLastLocation());
+
+
+                    // Logic to handle location object
+                } else {
+                    Log.d("", "NIET OKE");
+                }
+
+                // do work (push data to server)
+
+            }
+        };
+        Log.d("", "Start updates ONCreate");
+
+
+        startLocationUpdates();
+
 
     }
 
     public void onResume(){
         super.onResume();
         //this will refresh the osmdroid configuration on resuming.
+        Log.d("", "OnResume");
+
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+
+        startLocationUpdates();
+        Log.d("", "OnresumeFinished");
+
+
     }
 
     public void onPause(){
@@ -187,6 +249,10 @@ public class MapActivity extends AppCompatActivity {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+        Log.d("cw2b2","PAsue");
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        Log.d("cw2b2","PAsue2");
+
     }
 
 
@@ -265,9 +331,14 @@ public class MapActivity extends AppCompatActivity {
         void onFailure();
     }
 
-    /*protected void startLocationUpdates() {
+    protected void startLocationUpdates() {
         long FASTEST_INTERVAL = 2000;
         long UPDATE_INTERVAL = 5 * 1000;
+        Log.d("", "Start updates");
+
+
+
+
 
 
 
@@ -292,32 +363,9 @@ public class MapActivity extends AppCompatActivity {
                     10);
             return;
         }
-        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
+        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+        Log.d("", "Start updates2");
 
-
-                        if (locationResult != null) {
-                            Log.d("", "OKE");
-                            Log.d("", "OKE" + " LATITUDE= " + locationResult.getLastLocation().getLatitude() + " LONGITTUDE" + locationResult.getLastLocation().getLongitude());
-
-                            GeoPoint currentLocation = new GeoPoint(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
-                            Marker locationMarker = new Marker(map);
-                            locationMarker.setPosition(currentLocation);
-                            locationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                            map.getOverlays().add(locationMarker);
-                            locationMarker.setTitle("This is my location !! :D ");
-
-                            // Logic to handle location object
-                        } else {
-                            Log.d("", "NIET OKE");
-                        }
-
-                        // do work (push data to server)
-
-                    }
-                },
-                Looper.myLooper());
-    }*/
+    }
 
 }

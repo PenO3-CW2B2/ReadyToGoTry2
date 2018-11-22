@@ -60,17 +60,27 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
 
         // Getting all the data that needs to be hashed
-        Hash1 = prefs.getString("hash", "").getBytes();
+//        Hash1 = prefs.getString("hash1", "").getBytes();
+        Hash1 = "hallo".getBytes();
 
-        Startdate = prefs.getString("startTime", "");
+        Startdate = prefs.getString("startTime", "test");
+        Log.d("cw2","start "+ Startdate );
 
 
         CurrentDateMillis = Long.toString(System.currentTimeMillis());
         DateByte = CurrentDateMillis.getBytes();
+
         ToBeHashed = new byte[DateByte.length + Hash1.length];
         System.arraycopy(DateByte, 0, ToBeHashed, 0, DateByte.length);
         System.arraycopy(Hash1, 0, ToBeHashed, DateByte.length, Hash1.length);
         Hash2 = digest.digest(ToBeHashed);
+        Log.d("cw2", username );
+        Log.d("cw2", Hash2.toString() );
+        Log.d("cw2", CurrentDateMillis );
+        Log.d("cw2", Startdate );
+
+
+
 
 
 
@@ -83,6 +93,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
+
         NdefRecord Hash2Record = NdefRecord.createMime("Hash2",  Hash2);
         NdefRecord DateInMillisRecord = NdefRecord.createMime("DateInMillis",  DateByte);
         NdefRecord StartdateRecord = NdefRecord.createMime("startdate",  Startdate.getBytes());

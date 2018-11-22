@@ -189,8 +189,8 @@ public class BikeInfo extends AppCompatActivity {
                             String startTime = dataObject.getString("timestamp");
                             Log.d("cw2b2",startTime);
                             SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-                            prefs.edit().putString("hash", hash);
-                            prefs.edit().putString("startTime", startTime);
+                            prefs.edit().putString("hash1", hash).apply();
+                            prefs.edit().putString("startTime", startTime).apply();
                         } catch (JSONException e) {
                             Log.d("CW2B2", e.toString());
                         }

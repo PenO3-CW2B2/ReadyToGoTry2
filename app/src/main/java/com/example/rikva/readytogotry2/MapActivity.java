@@ -123,7 +123,9 @@ public class MapActivity extends AppCompatActivity {
         this.mLocationOverlay = new MyLocationNewOverlay(map);
 
 //        this.mLocationOverlay.enableMyLocation();
-        this.mLocationOverlay.mMyLocationProvider.destroy();
+//        this.mLocationOverlay.mMyLocationProvider.destroy();
+        this.mLocationOverlay.disableMyLocation();
+
 
         map.getOverlays().add(this.mLocationOverlay);
 

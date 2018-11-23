@@ -95,7 +95,6 @@ public class MapActivity extends AppCompatActivity {
         //handle permissions first, before map is created. not depicted here
 
         //load/initialize the osmdroid configuration, this can be done
-        mFusedLocationClient= getFusedLocationProviderClient(this);
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         //setting this before the layout is inflated is a good idea
@@ -124,7 +123,7 @@ public class MapActivity extends AppCompatActivity {
         this.mLocationOverlay = new MyLocationNewOverlay(map);
 
 //        this.mLocationOverlay.enableMyLocation();
-        this.mLocationOverlay.disableMyLocation();
+        this.mLocationOverlay.mMyLocationProvider.destroy();
 
         map.getOverlays().add(this.mLocationOverlay);
 
@@ -199,25 +198,7 @@ public class MapActivity extends AppCompatActivity {
                 }
             }
         });
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
 
-
-                if (locationResult != null) {
-                    Log.d("cw2b2", "OKE" + " LATITUDE= " + locationResult.getLastLocation().getLatitude() + " LONGITTUDE" + locationResult.getLastLocation().getLongitude());
-//                    mLocationOverlay.setLoccationHack(locationResult.getLastLocation());
-
-
-                    // Logic to handle location object
-                } else {
-                    Log.d("", "NIET OKE");
-                }
-
-                // do work (push data to server)
-
-            }
-        };
         Log.d("", "Start updates ONCreate");
 
 
@@ -234,7 +215,7 @@ public class MapActivity extends AppCompatActivity {
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+//        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
 
         startLocationUpdates();
         Log.d("", "OnresumeFinished");
@@ -335,6 +316,8 @@ public class MapActivity extends AppCompatActivity {
         long FASTEST_INTERVAL = 2000;
         long UPDATE_INTERVAL = 5 * 1000;
         Log.d("", "Start updates");
+        mFusedLocationClient= getFusedLocationProviderClient(this);
+
 
 
 
@@ -344,7 +327,8 @@ public class MapActivity extends AppCompatActivity {
 
         // Create the location request to start receiving updates
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
 
         mLocationRequest.setInterval(UPDATE_INTERVAL);
 
@@ -363,6 +347,25 @@ public class MapActivity extends AppCompatActivity {
                     10);
             return;
         }
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+
+
+                if (locationResult != null) {
+                    Log.d("cw2b2", "OKE" + " LATITUDE= " + locationResult.getLastLocation().getLatitude() + " LONGITTUDE" + locationResult.getLastLocation().getLongitude());
+//                    mLocationOverlay.setLoccationHack(locationResult.getLastLocation());
+
+
+                    // Logic to handle location object
+                } else {
+                    Log.d("", "NIET OKE");
+                }
+
+                // do work (push data to server)
+
+            }
+        };
         getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
         Log.d("", "Start updates2");
 

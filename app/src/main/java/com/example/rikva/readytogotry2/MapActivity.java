@@ -9,7 +9,9 @@ import android.inputmethodservice.Keyboard;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -43,35 +45,48 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.api.IMapController;
+import org.osmdroid.api.IMapView;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.util.NetworkLocationIgnorer;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer;
+import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity  {
     MapView map = null;
     //public LocationRequest mLocationRequest;
+    private IMyLocationConsumer mMyLocationConsumer;
+    public RikProvider provider;
+    public IMyLocationProvider providermap;
     private MyLocationNewOverlay mLocationOverlay;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private LocationRequest mLocationRequest;
+    private Handler mHandler;
+    private Object mHandlerToken = new Object();
+    private final LinkedList<Runnable> mRunOnFirstFix = new LinkedList<Runnable>();
+
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);        Log.d("", "PROBLEEM");
+        super.onCreate(savedInstanceState);
+        Log.d("", "PROBLEEM");
 
 
         setContentView(R.layout.activity_map);
@@ -113,18 +128,16 @@ public class MapActivity extends AppCompatActivity {
         map.setMultiTouchControls(true);
         final IMapController mapController = map.getController();
         mapController.setZoom(15.0);
-//        GpsMyLocationProvider provider = new GpsMyLocationProvider(ctx);
-//        provider.addLocationSource(LocationManager.PASSIVE_PROVIDER);
-//        provider.addLocationSource(LocationManager.KEY_LOCATION_CHANGED);
+        provider = new RikProvider(ctx);
 
 
 
 
-        this.mLocationOverlay = new MyLocationNewOverlay(map);
+        this.mLocationOverlay = new MyLocationNewOverlay(provider,map);
 
 //        this.mLocationOverlay.enableMyLocation();
 //        this.mLocationOverlay.mMyLocationProvider.destroy();
-        this.mLocationOverlay.disableMyLocation();
+//        this.mLocationOverlay.mMyLocationProvider.stopLocationProvider();
 
 
         map.getOverlays().add(this.mLocationOverlay);
@@ -203,7 +216,8 @@ public class MapActivity extends AppCompatActivity {
 
         Log.d("", "Start updates ONCreate");
 
-
+        providermap = mLocationOverlay.getMyLocationProvider();
+        Log.d("", provider.getLocationSources().toString());
         startLocationUpdates();
 
 
@@ -217,7 +231,7 @@ public class MapActivity extends AppCompatActivity {
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-//        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
 
         startLocationUpdates();
         Log.d("", "OnresumeFinished");
@@ -329,7 +343,7 @@ public class MapActivity extends AppCompatActivity {
 
         // Create the location request to start receiving updates
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
 
 
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -359,6 +373,7 @@ public class MapActivity extends AppCompatActivity {
 //                    mLocationOverlay.setLoccationHack(locationResult.getLastLocation());
 
 
+
                     // Logic to handle location object
                 } else {
                     Log.d("", "NIET OKE");
@@ -372,5 +387,7 @@ public class MapActivity extends AppCompatActivity {
         Log.d("", "Start updates2");
 
     }
+
+
 
 }

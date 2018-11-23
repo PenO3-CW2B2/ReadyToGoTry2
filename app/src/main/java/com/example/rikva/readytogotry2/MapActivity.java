@@ -76,9 +76,6 @@ public class MapActivity extends AppCompatActivity  {
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private LocationRequest mLocationRequest;
-    private Handler mHandler;
-    private Object mHandlerToken = new Object();
-    private final LinkedList<Runnable> mRunOnFirstFix = new LinkedList<Runnable>();
 
 
 

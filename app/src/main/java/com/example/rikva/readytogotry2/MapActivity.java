@@ -340,7 +340,7 @@ public class MapActivity extends AppCompatActivity  {
 
         // Create the location request to start receiving updates
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
         mLocationRequest.setInterval(UPDATE_INTERVAL);

@@ -1,5 +1,6 @@
 package com.example.rikva.readytogotry2;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -101,7 +102,7 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
         Log.d("cw2b2ndef", Ndef.toString());
 
         Log.d("cw2b2", bin2hex(digest.digest(ToBeHashed))+"  "+CurrentDateMillis);
-
+        startActivity(new Intent(this, HomeActivity.class));
 
 
     }

@@ -35,5 +35,8 @@
     <string name="map">Map</string>
     <string name="lock_unlock">Toggle Lock</string>
     <string name="end_contract">End Contract</string>
+    <string name="end_contract_info">Approach NFC module to end your contract</string>
+    <string name="unlock_info">Approach NFC module to toggle the bike lock</string>
+
 
 </resources>

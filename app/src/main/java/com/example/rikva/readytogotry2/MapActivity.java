@@ -219,7 +219,7 @@ public class MapActivity extends AppCompatActivity  {
 
 
     }
-
+@Override
     public void onResume(){
         super.onResume();
         //this will refresh the osmdroid configuration on resuming.
@@ -235,6 +235,7 @@ public class MapActivity extends AppCompatActivity  {
 
 
     }
+    @Override
 
     public void onPause(){
         super.onPause();
@@ -245,6 +246,9 @@ public class MapActivity extends AppCompatActivity  {
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
         Log.d("cw2b2","PAsue");
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+//        mFusedLocationClient = null;
+//        mLocationCallback = null;
+//        mLocationRequest = null;
         Log.d("cw2b2","PAsue2");
 
     }

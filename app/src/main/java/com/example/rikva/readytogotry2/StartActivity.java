@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StartActivity extends AppCompatActivity {
-
+    private boolean tokencheck = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,16 +35,24 @@ public class StartActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tokenCheck(new VolleyCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        startActivity(new Intent(StartActivity.this, HomeActivity.class));
-                    }
-                    @Override
-                    public void onFailure() {
-                        startActivity(new Intent(StartActivity.this, SignInActivity.class));
-                    }
-                });
+                if (!tokencheck) {
+                    tokencheck = true;
+                    tokenCheck(new VolleyCallBack() {
+
+                        @Override
+                        public void onSuccess() {
+                            startActivity(new Intent(StartActivity.this, HomeActivity.class));
+                            tokencheck = false;
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            startActivity(new Intent(StartActivity.this, SignInActivity.class));
+                            tokencheck = false;
+                        }
+
+                    });
+                }
             }
         });
 
@@ -94,7 +102,11 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void switchToRegisterActivity(View view) {
-        startActivity(new Intent(StartActivity.this, RegisterActivity.class));
+
+        Intent intent = new Intent(StartActivity.this, RegisterActivity.class);
+        startActivity(intent);
+
+
 
     }
 

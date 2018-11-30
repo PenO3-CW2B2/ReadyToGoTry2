@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignInActivity extends AppCompatActivity {
-
+    private Boolean clicked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,18 +46,21 @@ public class SignInActivity extends AppCompatActivity {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!clicked) {
                 signInRequest(new VolleyCallBack() {
                     @Override
                     public void onSuccess() {
                         toast_success.show();
                         startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+                        clicked = false;
                     }
                     @Override
                     public void onFailure() {
                         toast_fail.show();
+                        clicked = false;
                     }
                 });
-            }
+            }}
         });
     }
 

@@ -1,5 +1,6 @@
 package com.example.rikva.readytogotry2;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -60,8 +61,11 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
 
         // Getting all the data that needs to be hashed
-//        Hash1 = prefs.getString("hash1", "").getBytes();
-        Hash1 = "hallo".getBytes();
+
+        String Hash1String = prefs.getString("hash1", "");
+        Log.d("cw2","HASH1 in unlock activity "+ Hash1String );
+        Hash1 = Hash1String.getBytes();
+//        Hash1 = "hallo".getBytes();
 
         Startdate = prefs.getString("startTime", "test");
         Log.d("cw2","start "+ Startdate );
@@ -78,6 +82,10 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         Log.d("cw2", Hash2.toString() );
         Log.d("cw2", CurrentDateMillis );
         Log.d("cw2", Startdate );
+        String Hash2String = bin2hex(Hash2);
+        Log.d("cw2","HASH2 "+ Hash2String );
+
+        Hash2 = Hash2String.getBytes();
 
 
 
@@ -115,7 +123,8 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         Log.d("cw2b2ndef", Ndef.toString());
 
         Log.d("cw2b2", bin2hex(digest.digest(ToBeHashed))+"  "+CurrentDateMillis);
-
+        startActivity(new Intent(this, HomeActivity.class));
+        finish();
 
 
 

@@ -163,17 +163,7 @@ public class MapActivity extends AppCompatActivity  {
 
 
 
-        getBikes(new VolleyCallBack() {
-            @Override
-            public void onSuccess() {
-                Log.d("CW2B2", "SUCCESS");
-            }
 
-            @Override
-            public void onFailure() {
-                Log.d("CW2B2", "FAILURE");
-            }
-        });
 
 
         final EditText searchStringET = (EditText)findViewById(R.id.searchbar);
@@ -229,6 +219,17 @@ public class MapActivity extends AppCompatActivity  {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+        getBikes(new VolleyCallBack() {
+            @Override
+            public void onSuccess() {
+            Log.d("CW2B2", "SUCCESS");
+        }
+
+            @Override
+            public void onFailure() {
+            Log.d("CW2B2", "FAILURE");
+        }
+        });
 
         startLocationUpdates();
         Log.d("", "OnresumeFinished");
@@ -250,6 +251,7 @@ public class MapActivity extends AppCompatActivity  {
 //        mLocationCallback = null;
 //        mLocationRequest = null;
         Log.d("cw2b2","PAsue2");
+//        finish();
 
     }
 

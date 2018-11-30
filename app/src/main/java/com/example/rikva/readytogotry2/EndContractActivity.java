@@ -103,6 +103,7 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
 
         Log.d("cw2b2", bin2hex(digest.digest(ToBeHashed))+"  "+CurrentDateMillis);
         startActivity(new Intent(this, HomeActivity.class));
+        finish();
 
 
     }

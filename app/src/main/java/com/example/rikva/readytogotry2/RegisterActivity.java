@@ -22,7 +22,9 @@ import java.util.Map;
 
 
 public class RegisterActivity extends AppCompatActivity {
-
+    private Boolean AcceptedByServer = false;
+    private Boolean clicked = false;
+    private Boolean gotResult = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +36,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (makeRequest()) {
-                    SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
-                    prefs.edit().remove("token").apply();
-                    finish();
+                if (!clicked) {
+                    clicked = true;
+                    if (makeRequest()) {
+                        clicked = false;
+                        SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
+                        prefs.edit().remove("token").apply();
+                        finish();
+                    }else{
+                        clicked = false;
+                    }
                 }
             }
         });
@@ -73,14 +81,21 @@ public class RegisterActivity extends AppCompatActivity {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
+
                     @Override
                     public void onResponse(String response) {
                         Log.d("DEBUG",response);
+                        gotResult = true;
+                        AcceptedByServer = true;
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("DEBUG","ERROR");
+                AcceptedByServer = false;
+                gotResult = true;
+
+
             }
         }) {
             @Override
@@ -104,7 +119,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         };
         queue.add(stringRequest);
-        return true;
+
+        if (AcceptedByServer) {
+            AcceptedByServer = false;
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public void switchToMapsActivity(View view) {

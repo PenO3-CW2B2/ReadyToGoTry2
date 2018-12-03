@@ -139,18 +139,7 @@ public class MapActivity extends AppCompatActivity  {
 
         map.getOverlays().add(this.mLocationOverlay);
 
-        if (mLocationOverlay.getMyLocation() != null) {
-            mapController.setCenter(mLocationOverlay.getMyLocation());
-            this.mLocationOverlay.enableFollowLocation();
-            Log.d("CW2B2", mLocationOverlay.getMyLocation().toString() );
-        } else {
-            mapController.setCenter(new GeoPoint(50.883333, 4.7));
-            ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.mapMainLayout);
-            Snackbar snackbar = Snackbar.make(layout, "No Location Services Available", Snackbar.LENGTH_LONG);
-            Log.d("CW2B2", "No Location Services Available" );
 
-            snackbar.show();
-        }
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -206,6 +195,18 @@ public class MapActivity extends AppCompatActivity  {
         providermap = mLocationOverlay.getMyLocationProvider();
         Log.d("", provider.getLocationSources().toString());
         startLocationUpdates();
+        if (mLocationOverlay.getMyLocation() != null) {
+            mapController.setCenter(mLocationOverlay.getMyLocation());
+            this.mLocationOverlay.enableFollowLocation();
+            Log.d("CW2B2", mLocationOverlay.getMyLocation().toString() );
+        } else {
+            mapController.setCenter(new GeoPoint(50.883333, 4.7));
+//            ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.mapMainLayout);
+//            Snackbar snackbar = Snackbar.make(layout, "No Location Services Available", Snackbar.LENGTH_LONG);
+//            Log.d("CW2B2", "No Location Services Available" );
+
+//            snackbar.show();
+        }
 
 
     }

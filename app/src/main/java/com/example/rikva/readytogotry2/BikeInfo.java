@@ -33,6 +33,7 @@ import java.util.Map;
 
 public class BikeInfo extends AppCompatActivity {
     public String bikeId = null;
+    public Boolean clicked = false;
 
 
 
@@ -111,14 +112,17 @@ public class BikeInfo extends AppCompatActivity {
         rentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!clicked) {
+                    clicked = true;
+                    try {
+                        requestContract();
+                        clicked = false;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        clicked = false;
+                    }
 
-                try {
-                    requestContract();
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-
-
             }
         });
     }

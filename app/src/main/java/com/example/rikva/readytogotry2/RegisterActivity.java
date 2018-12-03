@@ -1,5 +1,6 @@
 package com.example.rikva.readytogotry2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,14 +19,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class RegisterActivity extends AppCompatActivity {
-    private Boolean AcceptedByServer = false;
     private Boolean clicked = false;
-    private Boolean gotResult = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,25 +35,19 @@ public class RegisterActivity extends AppCompatActivity {
 
         Button submit = (Button)findViewById(R.id.register_button);
 
-
         submit.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 if (!clicked) {
                     clicked = true;
-                    if (makeRequest()) {
-                        clicked = false;
-                        SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
-                        prefs.edit().remove("token").apply();
-                        finish();
-                    }else{
-                        clicked = false;
-                    }
+                    makeRequest();
                 }
+
             }
         });
     }
 
-    private boolean makeRequest () {
+    private void makeRequest () {
 
         final EditText username_field = (EditText)findViewById(R.id.tb_username);
         final EditText password_field = (EditText)findViewById(R.id.tb_password);
@@ -61,22 +57,22 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(username_field.getText().toString())) {
             username_field.setError(getString(R.string.error_field_required));
-            return false;
+            clicked = false;
         }
         if (TextUtils.isEmpty(email_field.getText().toString())) {
             email_field.setError(getString(R.string.error_field_required));
-            return false;
+            clicked = false;
         }
         if (TextUtils.isEmpty(password_field.getText().toString())) {
             password_field.setError(getString(R.string.error_field_required));
-            return false;
+            clicked = false;
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email_field.getText().toString()).matches()) {
             email_field.setError(getString(R.string.invalid_email));
-            return false;
+            clicked = false;
         }
-
         RequestQueue queue = Volley.newRequestQueue(this);
+
         String url ="https://andreasp.ulyssis.be/auth/users/create/";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -85,15 +81,17 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("DEBUG",response);
-                        gotResult = true;
-                        AcceptedByServer = true;
+                        SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
+                        clicked = false;
+                        prefs.edit().remove("token").apply();
+                        finish();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("DEBUG","ERROR");
-                AcceptedByServer = false;
-                gotResult = true;
+                clicked = false;
+                showerror();
 
 
             }
@@ -120,15 +118,20 @@ public class RegisterActivity extends AppCompatActivity {
         };
         queue.add(stringRequest);
 
-        if (AcceptedByServer) {
-            AcceptedByServer = false;
-            return true;
-        }else{
-            return false;
-        }
     }
 
     public void switchToMapsActivity(View view) {
         startActivity(new Intent(RegisterActivity.this, MapActivity.class));
     }
+    public void showerror (){
+        Context context = getApplicationContext();
+        CharSequence text_fail = "Please check internet connection, if your internet connection is ok please choose a more difficult password or another username or check if your email is spelled correctly";
+        int duration = Toast.LENGTH_SHORT;
+
+        final Toast toast_fail = Toast.makeText(context, text_fail, duration);
+        toast_fail.show();
+
+    }
+
+
 }

@@ -29,6 +29,9 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
     public String CurrentDateMillis;
     public NdefMessage Ndef;
     private byte[] Hash2;
+    private String half1;
+    private String half2;
+
 
 
     @Override
@@ -78,12 +81,18 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         System.arraycopy(DateByte, 0, ToBeHashed, 0, DateByte.length);
         System.arraycopy(Hash1, 0, ToBeHashed, DateByte.length, Hash1.length);
         Hash2 = digest.digest(ToBeHashed);
+
         Log.d("cw2", username );
-        Log.d("cw2", Hash2.toString() );
         Log.d("cw2", CurrentDateMillis );
         Log.d("cw2", Startdate );
         String Hash2String = bin2hex(Hash2);
         Log.d("cw2","HASH2 "+ Hash2String );
+
+        half1 = Hash2String.substring(0, Hash2String.length() / 2);
+        half2 = Hash2String.substring(Hash2String.length()/2);
+
+        Log.d("cw2", half1 + half2 );
+
 
         Hash2 = Hash2String.getBytes();
 
@@ -101,8 +110,13 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
+        Log.d("cw2", "TEST 3");
 
-        NdefRecord Hash2Record = NdefRecord.createMime("Hash2",  Hash2);
+        NdefRecord Hash2Record = NdefRecord.createMime("Hash2.1", half1.getBytes());
+        Log.d("cw2", "TEST 4");
+
+        NdefRecord Hash2Record2 = NdefRecord.createMime("Hash2.2",  half2.getBytes());
+
         NdefRecord DateInMillisRecord = NdefRecord.createMime("DateInMillis",  DateByte);
         NdefRecord StartdateRecord = NdefRecord.createMime("startdate",  Startdate.getBytes());
         Log.d("cw2", "TEST 1");
@@ -124,7 +138,14 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
         Log.d("cw2b2", bin2hex(digest.digest(ToBeHashed))+"  "+CurrentDateMillis);
         startActivity(new Intent(this, HomeActivity.class));
-        finish();
+        finish()
+
+
+
+
+
+
+        ;
 
 
 

@@ -118,6 +118,8 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d("cw2B2", "FATAL: VolleyError: " + error.toString());
+                    updateclicked = false;
+
                 }
             }) {
                 @Override

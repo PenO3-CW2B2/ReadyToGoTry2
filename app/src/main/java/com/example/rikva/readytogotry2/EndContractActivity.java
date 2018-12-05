@@ -26,6 +26,8 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
     public String CurrentDateMillis;
     public NdefMessage Ndef;
     private byte[] Hash2;
+    private String half1;
+
 
 
     @Override
@@ -69,6 +71,9 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
         System.arraycopy(DateByte, 0, ToBeHashed, 0, DateByte.length);
         System.arraycopy(Hash1, 0, ToBeHashed, DateByte.length, Hash1.length);
         Hash2 = digest.digest(ToBeHashed);
+        String Hash2String = bin2hex(Hash2);
+        half1 = Hash2String.substring(0, Hash2String.length() / 2);
+
 
 
 
@@ -81,7 +86,7 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        NdefRecord Hash2Record = NdefRecord.createMime("Hash2",  Hash2);
+        NdefRecord Hash2Record = NdefRecord.createMime("Hash2",  half1.getBytes());
         NdefRecord DateInMillisRecord = NdefRecord.createMime("DateInMillis",  DateByte);
         NdefRecord StartdateRecord = NdefRecord.createMime("startdate",  Startdate.getBytes());
         Log.d("cw2", "TEST 1");

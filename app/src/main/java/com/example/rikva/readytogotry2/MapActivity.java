@@ -67,6 +67,7 @@ import java.util.concurrent.TimeUnit;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class MapActivity extends AppCompatActivity  {
+    public boolean renting;
     MapView map = null;
     //public LocationRequest mLocationRequest;
     private IMyLocationConsumer mMyLocationConsumer;
@@ -97,9 +98,6 @@ public class MapActivity extends AppCompatActivity  {
                     10);
 
         }
-
-
-
 
 
         //startLocationUpdates();
@@ -209,28 +207,35 @@ public class MapActivity extends AppCompatActivity  {
         }
 
 
+        renting = getIntent().getBooleanExtra("renting", false);
+
     }
 @Override
     public void onResume(){
         super.onResume();
         //this will refresh the osmdroid configuration on resuming.
-        Log.d("", "OnResume");
+        Log.d("cw2B2", "OnResume");
 
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
-        getBikes(new VolleyCallBack() {
-            @Override
-            public void onSuccess() {
-            Log.d("CW2B2", "SUCCESS");
-        }
+        if (!renting) {
+            getBikes(new VolleyCallBack() {
+                @Override
+                public void onSuccess() {
+                    Log.d("CW2B2", "SUCCESS");
+                }
 
-            @Override
-            public void onFailure() {
-            Log.d("CW2B2", "FAILURE");
+                @Override
+                public void onFailure() {
+                    Log.d("CW2B2", "FAILURE");
+                }
+            });
+        } else {
+            Log.d("cw2b2", "*Gets own bike*");
+            getOwnBike();
         }
-        });
 
         startLocationUpdates();
         Log.d("", "OnresumeFinished");
@@ -257,6 +262,73 @@ public class MapActivity extends AppCompatActivity  {
     }
 
 
+    private void getOwnBike() {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://andreasp.ulyssis.be/auth/users/bike/hash/";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            final JSONObject obj = new JSONObject(response);
+
+                                Double longitude = obj.getDouble("last_longitude");
+                                final Double latitude = obj.getDouble("last_laltitude");
+                                Log.d("CW2B2", longitude.toString() + " " + latitude.toString());
+
+                                GeoPoint bikeLocation = new GeoPoint(latitude, longitude);
+                                Marker bike = new Marker(map);
+                                bike.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                                    @Override
+                                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                                        Intent intent = new Intent(MapActivity.this, BikeInfo.class);
+                                        intent.putExtra("bikeObject", obj.toString());
+                                        intent.putExtra("renting", renting);
+                                        GeoPoint currentLocation = mLocationOverlay.getMyLocation();
+                                        if (currentLocation!= null){
+                                            intent.putExtra("currentLocation", String.valueOf(currentLocation));
+                                        }
+
+                                        startActivity(intent);
+                                        return false;
+                                    }
+                                });
+                                bike.setIcon(getResources().getDrawable(R.mipmap.bicycle));
+                                bike.setPosition(bikeLocation);
+                                bike.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                                map.getOverlays().add(bike);
+                                //bike.setTitle(id);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d("CW2B2", e.toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("CW2B2", error.toString());
+                Log.d("CW2B2", "BLAH3");
+
+            }
+        }) {
+
+            @Override
+            public Map getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
+                String token = prefs.getString("token","");
+                String headerString = "Token " + token;
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", headerString);
+                return headers;
+            }
+        };
+        queue.add(stringRequest);
+    }
+
     private void getBikes(final VolleyCallBack callBack) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -270,7 +342,7 @@ public class MapActivity extends AppCompatActivity  {
                             JSONArray data = new JSONArray(response);
 
                             for (int i = 0; i < data.length(); i++) {
-                                 final JSONObject obj = data.getJSONObject(i);
+                                final JSONObject obj = data.getJSONObject(i);
                                 Double longitude = obj.getDouble("last_longitude");
                                 final Double latitude = obj.getDouble("last_laltitude");
                                 Log.d("CW2B2", longitude.toString() + " " + latitude.toString());
@@ -282,6 +354,7 @@ public class MapActivity extends AppCompatActivity  {
                                     public boolean onMarkerClick(Marker marker, MapView mapView) {
                                         Intent intent = new Intent(MapActivity.this, BikeInfo.class);
                                         intent.putExtra("bikeObject", obj.toString());
+                                        intent.putExtra("renting", renting);
                                         GeoPoint currentLocation = mLocationOverlay.getMyLocation();
                                         if (currentLocation!= null){
                                             intent.putExtra("currentLocation", String.valueOf(currentLocation));
@@ -326,6 +399,9 @@ public class MapActivity extends AppCompatActivity  {
         };
         queue.add(stringRequest);
     }
+
+
+
 
     public interface VolleyCallBack {
         void onSuccess();

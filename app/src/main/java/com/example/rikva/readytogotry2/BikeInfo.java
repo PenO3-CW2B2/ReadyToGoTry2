@@ -61,7 +61,13 @@ public class BikeInfo extends AppCompatActivity {
                 JSONObject obj = new JSONObject(getIntent().getStringExtra("bikeObject"));
                 longitude = obj.getDouble("last_longitude");
                 latitude = obj.getDouble("last_laltitude");
-                bikeId = obj.getString("id");
+                if (getIntent().hasExtra("renting")) {
+                    if (getIntent().getBooleanExtra("renting", false)) {
+                        bikeId = obj.getString("bike_id");
+                    } else {
+                        bikeId = obj.getString("id");
+                    }
+                }
 
                 bikeIDTextView.setText(bikeId);
 
@@ -112,16 +118,24 @@ public class BikeInfo extends AppCompatActivity {
         rentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!clicked) {
-                    clicked = true;
-                    try {
-                        requestContract();
-                        clicked = false;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        clicked = false;
-                    }
+                if (getIntent().getBooleanExtra("renting", false)) {
+                    Context context = getApplicationContext();
+                    CharSequence text = "You're already renting this bike...";
+                    int duration = Toast.LENGTH_LONG;
+                    final Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                } else {
+                    if (!clicked) {
+                        clicked = true;
+                        try {
+                            requestContract();
+                            clicked = false;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            clicked = false;
+                        }
 
+                    }
                 }
             }
         });
@@ -200,7 +214,7 @@ public class BikeInfo extends AppCompatActivity {
                             Log.d("CW2B2", e.toString());
                             Context context = getApplicationContext();
                             CharSequence text = "Unable to rent a bike, please check internet connection and make sure your aren't renting a bike";
-                            int duration = Toast.LENGTH_SHORT;
+                            int duration = Toast.LENGTH_LONG;
                             final Toast toast = Toast.makeText(context, text, duration);
                             toast.show();
                         }
@@ -212,7 +226,7 @@ public class BikeInfo extends AppCompatActivity {
                 Log.d("CW2B2", error.toString()+"123582");
                 Context context = getApplicationContext();
                 CharSequence text = "Unable to rent a bike, please check internet connection and make sure your aren't renting a bike";
-                int duration = Toast.LENGTH_SHORT;
+                int duration = Toast.LENGTH_LONG;
                 final Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
             }

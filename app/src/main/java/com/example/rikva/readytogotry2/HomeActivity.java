@@ -1,6 +1,7 @@
 package com.example.rikva.readytogotry2;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -59,7 +61,20 @@ public class HomeActivity extends AppCompatActivity {
     public void switchToMapsActivity(View view) {
         if (!clicked){
             clicked = true;
-            startActivity(new Intent(this, MapActivity.class));
+            Intent intent = new Intent(this, MapActivity.class);
+            intent.putExtra("renting", renting);
+            CharSequence text;
+            if (renting) {
+                text = "Switching to personal map...";
+            } else {
+                text = "Switching to free bikes map...";
+
+            }
+            Context context = getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+            final Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            startActivity(intent);
             clicked = false;
             }
     }

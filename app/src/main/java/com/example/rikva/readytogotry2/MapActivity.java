@@ -22,11 +22,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -157,6 +160,49 @@ public class MapActivity extends AppCompatActivity  {
         final ImageButton searchButton = (ImageButton)findViewById(R.id.searchButton);
         final Marker searchResult = new Marker(map);
 
+        searchStringET.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String searchString = searchStringET.getText().toString();
+                    if (searchString.isEmpty()) {
+                        return false;
+                    }
+
+                    ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.mapMainLayout);
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(layout.getWindowToken(), 0);
+
+                    Geocoder geocoder = new Geocoder(MapActivity.this);
+                    List<Address> addresses = null;
+                    try {
+                        addresses = geocoder.getFromLocationName(searchString, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if(addresses.size() > 0) {
+                        double latitude = addresses.get(0).getLatitude();
+                        double longitude = addresses.get(0).getLongitude();
+                        mLocationOverlay.disableFollowLocation();
+                        mapController.setCenter(new GeoPoint(latitude, longitude));
+                        searchResult.setPosition(new GeoPoint(latitude, longitude));
+                        searchResult.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                        searchResult.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                                return true;
+                            }
+                        });
+                        searchResult.setIcon(getResources().getDrawable(R.drawable.marker));
+                        map.getOverlays().add(searchResult);
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+        });
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,6 +229,13 @@ public class MapActivity extends AppCompatActivity  {
                     mapController.setCenter(new GeoPoint(latitude, longitude));
                     searchResult.setPosition(new GeoPoint(latitude, longitude));
                     searchResult.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                    searchResult.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker, MapView mapView) {
+                            return true;
+                        }
+                    });
+                    searchResult.setIcon(getResources().getDrawable(R.drawable.marker));
                     map.getOverlays().add(searchResult);
                 }
             }

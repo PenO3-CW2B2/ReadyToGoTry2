@@ -60,7 +60,10 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
 
 
         // Getting all the data that needs to be hashed
-        Hash1 = prefs.getString("hash", "").getBytes();
+        String Hash1String = prefs.getString("hash1", "");
+        Hash1String = Hash1String.toUpperCase();
+
+        Hash1 = Hash1String.getBytes();
 
         Startdate = prefs.getString("startTime", "");
 
@@ -73,6 +76,13 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
         Hash2 = digest.digest(ToBeHashed);
         String Hash2String = bin2hex(Hash2);
         half1 = Hash2String.substring(0, Hash2String.length() / 2);
+        Log.d("cw2", "##########" + "HASH1 COMPONENTS END CONTRACT" );
+        Log.d("cw2", "hash1:   " +  Hash1String);
+        Log.d("cw2", "startd:   " +  Startdate);
+        Log.d("cw2", "##########" + "HASH2 COMPONENTS" );
+        Log.d("cw2", "hash2:   " +  half1);
+        Log.d("cw2", "currentdaate:   " +  CurrentDateMillis);
+        Log.d("cw2", "##########" + "  " );
 
 
 
@@ -91,7 +101,7 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
         NdefRecord StartdateRecord = NdefRecord.createMime("startdate",  Startdate.getBytes());
         Log.d("cw2", "TEST 1");
 
-        NdefRecord UsernameRecord = NdefRecord.createMime("username",  username.getBytes());
+        NdefRecord UsernameRecord = NdefRecord.createMime("username",  username.trim().getBytes());
         Log.d("cw2", "TEST 2");
 
         Log.d("cw2",UsernameRecord.toString()+" "+ StartdateRecord.toString()+ " "+DateInMillisRecord);

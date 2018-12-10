@@ -67,6 +67,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
         String Hash1String = prefs.getString("hash1", "");
         Log.d("cw2","HASH1 in unlock activity "+ Hash1String );
+        Hash1String = Hash1String.toUpperCase();
         Hash1 = Hash1String.getBytes();
 //        Hash1 = "hallo".getBytes();
 
@@ -74,7 +75,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         Log.d("cw2","start "+ Startdate );
 
 
-        CurrentDateMillis = Long.toString(System.currentTimeMillis());
+        CurrentDateMillis = Long.toString(System.currentTimeMillis()/1000);
         DateByte = CurrentDateMillis.getBytes();
 
         ToBeHashed = new byte[DateByte.length + Hash1.length];
@@ -83,7 +84,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         Hash2 = digest.digest(ToBeHashed);
 
         Log.d("cw2", username );
-        Log.d("cw2", CurrentDateMillis );
+        Log.d("cw2", "CURRENT " + CurrentDateMillis );
         Log.d("cw2", Startdate );
         String Hash2String = bin2hex(Hash2);
         Log.d("cw2","HASH2 "+ Hash2String );
@@ -93,17 +94,14 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
         Log.d("cw2", half1 + half2 );
 
-
         Hash2 = Hash2String.getBytes();
-
-
-
-
-
-
-
-
-
+        Log.d("cw2", "##########" + "HASH1 COMPONENTS" );
+        Log.d("cw2", "hash1:   " +  Hash1String);
+        Log.d("cw2", "startd:   " +  Startdate);
+        Log.d("cw2", "##########" + "HASH2 COMPONENTS" );
+        Log.d("cw2", "hash2:   " +  half1);
+        Log.d("cw2", "currentdaate:   " +  CurrentDateMillis);
+        Log.d("cw2", "##########" + "  " );
 
 
     }
@@ -121,7 +119,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         NdefRecord StartdateRecord = NdefRecord.createMime("startdate",  Startdate.getBytes());
         Log.d("cw2", "TEST 1");
 
-        NdefRecord UsernameRecord = NdefRecord.createMime("username",  username.getBytes());
+        NdefRecord UsernameRecord = NdefRecord.createMime("username",  username.trim().getBytes());
         Log.d("cw2", "TEST 2");
 
         Log.d("cw2",UsernameRecord.toString()+" "+ StartdateRecord.toString()+ " "+DateInMillisRecord);

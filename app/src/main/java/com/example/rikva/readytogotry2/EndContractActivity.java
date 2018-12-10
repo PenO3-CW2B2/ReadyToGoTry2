@@ -27,6 +27,7 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
     public NdefMessage Ndef;
     private byte[] Hash2;
     private String half1;
+    SharedPreferences prefs;
 
 
 
@@ -45,11 +46,7 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
             // Register callback to listen for message-sent success
             mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
         }
-        SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
-        username = prefs.getString("username","");
-        Log.d("cw2", username + "HALLO1");
-
-
+        prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
         // HASHING
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -59,24 +56,37 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
 
 
 
-        // Getting all the data that needs to be hashed
+    }
+
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
+
         String Hash1String = prefs.getString("hash1", "");
         Hash1String = Hash1String.toUpperCase();
-
         Hash1 = Hash1String.getBytes();
 
-        Startdate = prefs.getString("startTime", "");
-
+        Startdate = prefs.getString("startTime", "test");
 
         CurrentDateMillis = "0";
         DateByte = CurrentDateMillis.getBytes();
+
+        username = prefs.getString("username","");
+
         ToBeHashed = new byte[DateByte.length + Hash1.length];
         System.arraycopy(DateByte, 0, ToBeHashed, 0, DateByte.length);
         System.arraycopy(Hash1, 0, ToBeHashed, DateByte.length, Hash1.length);
         Hash2 = digest.digest(ToBeHashed);
+
+        Log.d("cw2", username );
+        Log.d("cw2", "CURRENT " + CurrentDateMillis );
+        Log.d("cw2", Startdate );
         String Hash2String = bin2hex(Hash2);
+        Log.d("cw2","HASH2 "+ Hash2String );
+
         half1 = Hash2String.substring(0, Hash2String.length() / 2);
-        Log.d("cw2", "##########" + "HASH1 COMPONENTS END CONTRACT" );
+        //half2 = Hash2String.substring(Hash2String.length()/2);
+
+        Log.d("cw2", "##########" + "HASH1 COMPONENTS" );
         Log.d("cw2", "hash1:   " +  Hash1String);
         Log.d("cw2", "startd:   " +  Startdate);
         Log.d("cw2", "##########" + "HASH2 COMPONENTS" );
@@ -89,13 +99,6 @@ public class EndContractActivity extends AppCompatActivity implements NfcAdapter
 
 
 
-
-
-
-    }
-
-    @Override
-    public NdefMessage createNdefMessage(NfcEvent event) {
         NdefRecord Hash2Record = NdefRecord.createMime("Hash2",  half1.getBytes());
         NdefRecord DateInMillisRecord = NdefRecord.createMime("DateInMillis",  DateByte);
         NdefRecord StartdateRecord = NdefRecord.createMime("startdate",  Startdate.getBytes());

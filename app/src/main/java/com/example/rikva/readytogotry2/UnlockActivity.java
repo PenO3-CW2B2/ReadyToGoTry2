@@ -31,6 +31,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
     private byte[] Hash2;
     private String half1;
     private String half2;
+    private SharedPreferences prefs;
 
 
 
@@ -49,11 +50,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
             // Register callback to listen for message-sent success
             mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
         }
-        SharedPreferences prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
-        username = prefs.getString("username","");
-        Log.d("cw2", username + "HALLO1");
-
-
+        prefs = getSharedPreferences("Prefs", MODE_PRIVATE);
         // HASHING
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -63,20 +60,22 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
 
 
-        // Getting all the data that needs to be hashed
+
+    }
+
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
 
         String Hash1String = prefs.getString("hash1", "");
-        Log.d("cw2","HASH1 in unlock activity "+ Hash1String );
         Hash1String = Hash1String.toUpperCase();
         Hash1 = Hash1String.getBytes();
-//        Hash1 = "hallo".getBytes();
 
         Startdate = prefs.getString("startTime", "test");
-        Log.d("cw2","start "+ Startdate );
-
 
         CurrentDateMillis = Long.toString(System.currentTimeMillis()/1000);
         DateByte = CurrentDateMillis.getBytes();
+
+        username = prefs.getString("username","");
 
         ToBeHashed = new byte[DateByte.length + Hash1.length];
         System.arraycopy(DateByte, 0, ToBeHashed, 0, DateByte.length);
@@ -90,11 +89,8 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         Log.d("cw2","HASH2 "+ Hash2String );
 
         half1 = Hash2String.substring(0, Hash2String.length() / 2);
-        half2 = Hash2String.substring(Hash2String.length()/2);
+        //half2 = Hash2String.substring(Hash2String.length()/2);
 
-        Log.d("cw2", half1 + half2 );
-
-        Hash2 = Hash2String.getBytes();
         Log.d("cw2", "##########" + "HASH1 COMPONENTS" );
         Log.d("cw2", "hash1:   " +  Hash1String);
         Log.d("cw2", "startd:   " +  Startdate);
@@ -104,16 +100,15 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
         Log.d("cw2", "##########" + "  " );
 
 
-    }
 
-    @Override
-    public NdefMessage createNdefMessage(NfcEvent event) {
+
+
         Log.d("cw2", "TEST 3");
 
         NdefRecord Hash2Record = NdefRecord.createMime("Hash2.1", half1.getBytes());
         Log.d("cw2", "TEST 4");
 
-        NdefRecord Hash2Record2 = NdefRecord.createMime("Hash2.2",  half2.getBytes());
+        // NdefRecord Hash2Record2 = NdefRecord.createMime("Hash2.2",  half2.getBytes());
 
         NdefRecord DateInMillisRecord = NdefRecord.createMime("DateInMillis",  DateByte);
         NdefRecord StartdateRecord = NdefRecord.createMime("startdate",  Startdate.getBytes());
@@ -136,14 +131,7 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
 
         Log.d("cw2b2", bin2hex(digest.digest(ToBeHashed))+"  "+CurrentDateMillis);
         startActivity(new Intent(this, HomeActivity.class));
-        finish()
-
-
-
-
-
-
-        ;
+        finish();
 
 
 
@@ -151,5 +139,6 @@ public class UnlockActivity extends AppCompatActivity implements NfcAdapter.Crea
     static String bin2hex(byte[] data) {
         return String.format("%0" + (data.length*2) + "X", new BigInteger(1, data));
     }
+
 
 }

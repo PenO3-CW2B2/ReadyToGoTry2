@@ -58,6 +58,23 @@ public class HomeActivity extends AppCompatActivity {
         updateHomeActivity();
     }
 
+    public void signOut(View view) {
+        if (!clicked) {
+            clicked = true;
+            Context context = getApplicationContext();
+            if (renting) {
+                CharSequence text = "Please end your contract before singing out";
+                int duration = Toast.LENGTH_LONG;
+                final Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            } else {
+                context.getSharedPreferences("Prefs", 0).edit().clear().apply();
+                finish();
+            }
+            clicked = false;
+        }
+    }
+
     public void switchToMapsActivity(View view) {
         if (!clicked){
             clicked = true;

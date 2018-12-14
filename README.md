@@ -1,6 +1,8 @@
 # ReadyToGoTry2
 The source code of our app for Android
 
+![Screenshot](App_Architecture.png)
+
 ## Used work from others
 ### Bicycle icon:
 

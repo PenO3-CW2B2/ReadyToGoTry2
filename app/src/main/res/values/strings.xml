@@ -38,6 +38,8 @@
     <string name="end_contract_info">Approach NFC module to end your contract</string>
     <string name="unlock_info">Approach NFC module to toggle the bike lock</string>
     <string name="signout">Sign Out</string>
+    <string name="not_renting">You\'re not renting a bike!</string>
+    <string name="toggle_toggle">Toggle Lock</string>
 
 
 </resources>

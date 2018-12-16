@@ -12,9 +12,26 @@ Link: https://www.shareicon.net/bicycle-585149
 
 The "Bicycle icon" has been used in the logo with a different color.
 
+### Map icon:
 
-### Text font:
+"Map Location, placeholder, Map Point, map pointer, Map Locator, interface, Map icon" designed by interface from Flaticon
 
-"DISCO" by typografski is licensed under a freeware license
+Link: https://www.shareicon.net/map-location-placeholder-map-point-map-pointer-map-locator-interface-map-701383
 
-Link: https://www.shareicon.net/bicycle-585149
+### Lock icon:
+
+"Lock, Security System, security, Closed Lock, padlock icon" designed by security from Flaticon
+
+Link: https://www.shareicon.net/lock-security-system-security-closed-lock-padlock-700464
+
+### End contract icon:
+
+"Close, cross, Close Tool, interface, Cross Mark, Close Option, Cross Out icon"  by interface is licensed under CC 3.0 BY
+
+Link: https://www.shareicon.net/close-cross-close-tool-interface-cross-mark-close-option-cross-out-657477
+
+### Sign out icon:
+
+"sign, out icon" by e Gandy is licensed under SIL Open Font License
+
+Link: https://www.shareicon.net/sign-out-851950
